@@ -19,10 +19,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="pjex.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="canvas.c" />
+    <ClCompile Include="jjuggumi.c" />
+    <ClCompile Include="keyin.c" />
+    <ClCompile Include="sample.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="canvas.h" />
+    <ClInclude Include="jjuggumi.h" />
+    <ClInclude Include="keyin.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="jjuggumi.dat" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

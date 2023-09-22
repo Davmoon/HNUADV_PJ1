@@ -28,6 +28,10 @@ int jjuggumi_init(void) {
 	return 0;
 }
 
+//void intro() {
+//
+//}
+
 int main(void) {
 	jjuggumi_init();
 	sample();

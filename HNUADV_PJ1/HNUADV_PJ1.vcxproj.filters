@@ -15,11 +15,33 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pjex.c">
+    <ClCompile Include="canvas.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="jjuggumi.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="keyin.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="sample.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="canvas.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="jjuggumi.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="keyin.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="jjuggumi.dat">
+      <Filter>소스 파일</Filter>
+    </None>
   </ItemGroup>
 </Project>
