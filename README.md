@@ -22,3 +22,9 @@ C 언어(구조체) 쭈꾸미 게임
 - 제비뽑기
 - 무궁화 꽃
 
+## Git 동기화 방법.
+1. [git 프로그램 64bit 다운](https://git-scm.com/download/win), [visual studio 다운, c++ 개발을 위한~~ 체크](https://visualstudio.microsoft.com/ko/)
+2. visual studio 클릭 후 리포지토리 복제 클릭
+3. [지포지토리 위치](https://github.com/Davmoon/HNUADV_PJ1.git) 붙여넣기 후 경로를 바탕화면 클릭 -> PJ1 폴더 생성 -> 생성한 폴더 더블 클릭 -> 확인 -> 복제
+4. 이 과정에서 브라우저에 github 로그인이 되어있는지 확인하는 창이 뜰 것임. 확인.
+5. ctrl(컨트롤) + Alt + l 버튼을 눌러 솔루션 탐색기를 열어 소스코드 부분에 기초 코드가 잘 들어왔는지 확인.
