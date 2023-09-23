@@ -22,6 +22,7 @@
     <ClCompile Include="canvas.c" />
     <ClCompile Include="jjuggumi.c" />
     <ClCompile Include="keyin.c" />
+    <ClCompile Include="mugunghwa.c" />
     <ClCompile Include="sample.c" />
   </ItemGroup>
   <ItemGroup>

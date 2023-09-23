@@ -1,4 +1,4 @@
-#ifndef _JJUGGUMI_H_
+#ifndef _JJUGGUMI_H_ // if no define으로 자세한건 https://blog.naver.com/clown7942/110123052710 참고
 #define _JJUGGUMI_H_
 
 #include <Windows.h>
@@ -12,7 +12,6 @@ int tick;  // 시계
 
 // 미니게임
 void sample(void);
-//void mugunghwa(void);
 //void mugunghwa(void);
 //void nightgame(void);
 //void juldarigi(void);
