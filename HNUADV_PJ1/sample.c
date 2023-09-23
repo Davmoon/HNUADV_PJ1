@@ -88,7 +88,6 @@ void sample(void) {
 	sample_init();
 	system("cls");
 	display();
-	dialog("message");
 	
 	while (1) {
 		// player 0만 손으로 움직임(4방향)
