@@ -81,44 +81,36 @@ void dialog(char message[]) {
 	int sec = DIALOG_DURATION_SEC + 1;
 	char save_buf[ROW_MAX][COL_MAX];
 
-	Sleep(1000);
-
 	//세이브 버퍼 생성, 새로운 부분 띄우고 복구하기 위함.
 	for (int i = 0; i < ROW_MAX; i++) {
 		for (int j = 0; j < COL_MAX; j++) {
-			save_buf[i][j] = back_buf[i][j];
+			save_buf[i][j] = front_buf[i][j];//현재 출력중인 버퍼를 저장.
 		}
 	}
-
 	//for (int i = 3; i < ROW_MAX - 3; i++) {
-	//	for (int j = 2; j < COL_MAX - 2; j++) {
-	//		back_buf[i][j] = 
+	//	front_buf[i][3] = front_buf[i][COL_MAX - 3] = '*';
+	//	for (int j = 3; j < COL_MAX - 3; j++) {
+	//		front_buf[i][j] = (i = 3 || i + ROW_MAX - 3) ? '*': '+';
 	//	}
 	//}
-
-
-	for (int i = 0; i < N_ROW; i++) {
-		// 대입문 이렇게 쓸 수 있는데 일부러 안 가르쳐줬음
-		back_buf[i][0] = back_buf[i][N_COL - 1] = '*'; //처음과 끝 부분 # 추가
+	
+	for (int i = 1; i < N_ROW; i++) {
+		back_buf[i][1] = back_buf[i][N_COL - 1] = '*';
 
 		for (int j = 1; j < N_COL - 1; j++) {
-			back_buf[i][j] = (i == 0 || i == N_ROW - 1) ? '*' : '+';// 앞의 열부분에서 처음 끝 채웠으니 행에서는 앞뒤 한줄씩은 다 채우기 코드
+			/*back_buf[i][j+1] = (i == 1 || i == N_ROW - 1) ? '*' : back_buf[i][j+1];*/
 		}
 	}
 	display();
-
-
 	while (sec != 0) {
 		Sleep(1000);
-
-		
 		sec--;
-		
-	};
+	}
 
 	for (int i = 0; i < ROW_MAX; i++) {
 		for (int j = 0; j < COL_MAX; j++) {
 			back_buf[i][j] = save_buf[i][j];
 		}
 	}
+	display();
 }
