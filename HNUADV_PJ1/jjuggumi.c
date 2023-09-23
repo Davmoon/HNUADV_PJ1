@@ -41,7 +41,7 @@ void intro() {
 }
 
 int main(void) {
-	jjuggumi_init();
+	jjuggumi_init();//인원 입력 함수
 	sample();
 	//intro();
 	//mugunghwa();

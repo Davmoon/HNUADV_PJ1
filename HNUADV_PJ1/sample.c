@@ -16,14 +16,14 @@ void move_tail(int i, int nx, int ny);
 int px[PLAYER_MAX], py[PLAYER_MAX], period[PLAYER_MAX];  // 각 플레이어 위치, 이동 주기
 
 void sample_init(void) {
-	map_init(15, 40);
+	map_init(15, 40);//#으로 둘러쌓인 실제 플레이 맵 부분
 	int x, y;
 	for (int i = 0; i < n_player; i++) {
 		// 같은 자리가 나오면 다시 생성
 		do {
-			x = randint(1, N_ROW - 2);
+			x = randint(1, N_ROW - 2);//jjuggumi.c 플레이어 수 만큼 숫자를 생성해서 랜덤 좌표 설정하는 함수
 			y = randint(1, N_COL - 2);
-		} while (!placable(x, y));
+		} while (!placable(x, y));//canvas.c, ' '인지 확인하는 함수
 		px[i] = x;
 		py[i] = y;
 		period[i] = randint(100, 500);
@@ -85,9 +85,10 @@ void move_tail(int player, int nx, int ny) {
 
 void sample(void) {
 	sample_init();
-
 	system("cls");
 	display();
+	dialog("message");
+	
 	while (1) {
 		// player 0만 손으로 움직임(4방향)
 		key_t key = get_key();
