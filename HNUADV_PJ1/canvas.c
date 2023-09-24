@@ -58,7 +58,7 @@ void display(void) {
 	print_status();
 }
 
-//맵을 넘어가는 dialog 사이즈 구현을 위해 N_ROW, N_COL에서 MAX로 수정
+// 맵을 넘어가는 dialog 사이즈 구현을 위해 N_ROW, N_COL에서 MAX로 수정, 기본코드 수정 불가하면 추가 함수 필요.
 void draw(void) {
 	for (int row = 0; row < ROW_MAX; row++) {
 		for (int col = 0; col < COL_MAX; col++) {
@@ -78,38 +78,50 @@ void print_status(void) {
 }
 
 void dialog(char message[]) {
-	int sec = DIALOG_DURATION_SEC + 1;
-	char save_buf[ROW_MAX][COL_MAX];
+	int sec = DIALOG_DURATION_SEC + 1; // 0으로 끝나므로 1로 끝나도록 + 1
+	char save_buf[ROW_MAX][COL_MAX]; //세이브 버퍼 생성, 새로운 부분 띄우고 복구하기 위함
 
-	//세이브 버퍼 생성, 새로운 부분 띄우고 복구하기 위함.
 	for (int i = 0; i < ROW_MAX; i++) {
 		for (int j = 0; j < COL_MAX; j++) {
-			save_buf[i][j] = back_buf[i][j];//현재 출력중인 버퍼를 저장.
+			save_buf[i][j] = back_buf[i][j];//현재 출력중인 버퍼를 저장
 		}
 	}
 
-	int Rmid = N_ROW / 3; //최소한으로 dialog 중앙정렬 위해 맵 세로 3등분해서 처음 + 1.
-	int Cmid = N_COL / 3;
+	int Rmid = N_ROW / 3; //최소한으로 dialog 중앙정렬 위해 맵 세로 3등분해서 처음 + 1
 	
-	do {
-		for (int i = Rmid ; i < Rmid + 5; i++) {
-			back_buf[i][2] = back_buf[i][COL_MAX - 45] = '*';
-			for (int j = 3; j < COL_MAX - 45; j++) {
-				back_buf[i][j] = (i == Rmid || i == Rmid + 4) ? '*' : ' ';
-				if (i == Rmid + 2 && j == 5) {
-					gotoxy(i, j);
-					printf("%d", sec);
-				}
+	// '*'로 이루어진 dialog 테두리 출력, 상상력 부족으로 한땀한땀 해봄
+	for (int i = Rmid; i < Rmid + 5; i++) {
+		back_buf[i][2] = back_buf[i][COL_MAX - 45] = '*';
+		for (int j = 3; j < COL_MAX - 45; j++) {
+			back_buf[i][j] = (i == Rmid || i == Rmid + 4) ? '*' : ' ';
+		}
+	}
+	display();
 
-				if (i == Rmid + 2 && j == 10) {
-					gotoxy(i, j);
-					printf("%s", message);
-				}
+	int y = Rmid + 2; // message 출력 아래쪽으로 몇칸인지 지정
+	int sec_x = 5; // sec초 출력 옆으로 몇칸인지 지정
+	int mes_x = 8; // message 출력 옆으로 몇칸인지 지정
+
+	do {
+
+		gotoxy(y, sec_x); // sec초 출력
+		printf("%d", sec);
+
+		gotoxy(y, mes_x); // message 출력
+		printf("%s", message);
+
+		Sleep(1000); // 1초 지연
+		sec--; //초 경과 카운트
+		
+		if (sec == 0) {
+			gotoxy(y, sec_x); // sec초 출력부분 빈칸으로 초기화
+			printf(" ");
+
+			for (int j = mes_x; j < strlen(message) + mes_x; j++) {
+				gotoxy(y, j); // message 출력부분 빈칸으로 초기화
+				printf(" ");
 			}
 		}
-		display();
-		Sleep(1000);
-		sec--;
 	
 	} while (sec != 0);
 
