@@ -99,7 +99,7 @@ void dialog(char message[]) {
 	display();
 
 	int y = Rmid + 2; // message 출력 아래쪽으로 몇칸인지 지정
-	int sec_x = 5; // sec초 출력 옆으로 몇칸인지 지정
+	int sec_x = 4; // sec초 출력 옆으로 몇칸인지 지정
 	int mes_x = 8; // message 출력 옆으로 몇칸인지 지정
 
 	do {
@@ -114,14 +114,12 @@ void dialog(char message[]) {
 		sec--; //초 경과 카운트
 		
 		if (sec == 0) {
-			gotoxy(y, sec_x); // sec초 출력부분 빈칸으로 초기화
-			printf(" ");
-
-			for (int j = mes_x; j < strlen(message) + mes_x; j++) {
+			for (int j = sec_x; j < COL_MAX - 46; j++) {
 				gotoxy(y, j); // message 출력부분 빈칸으로 초기화
 				printf(" ");
 			}
 		}
+	
 	
 	} while (sec != 0);
 
@@ -133,5 +131,5 @@ void dialog(char message[]) {
 
 	display();
 
-	Sleep(1000); // 정지하는 상태인지 파악하기 위한 TEST CODE
+	Sleep(2000); // 정지하는 상태인지 파악하기 위한 TEST CODE
 }
