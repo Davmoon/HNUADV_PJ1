@@ -88,7 +88,7 @@ void sample(void) {
 	sample_init();
 	system("cls");
 	display();
-	dialog("hello world!! you can do");
+	
 	
 	while (1) {
 		// player 0만 손으로 움직임(4방향)
@@ -97,7 +97,9 @@ void sample(void) {
 			break;
 		}
 		else if (key != K_UNDEFINED) {
+			
 			move_manual(key);
+			dialog("hello world!! you can do");
 		}
 
 		// player 1 부터는 랜덤으로 움직임(8방향)

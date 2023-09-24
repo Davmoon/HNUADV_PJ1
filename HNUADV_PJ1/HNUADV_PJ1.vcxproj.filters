@@ -24,9 +24,6 @@
     <ClCompile Include="sample.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="mugunghwa.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="keyin.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
