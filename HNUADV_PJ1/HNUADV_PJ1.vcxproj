@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="canvas.c" />
+    <ClCompile Include="jebi.c" />
     <ClCompile Include="jjuggumi.c" />
     <ClCompile Include="keyin.c" />
     <ClCompile Include="sample.c" />

@@ -27,6 +27,9 @@
     <ClCompile Include="keyin.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="jebi.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="jjuggumi.h">
