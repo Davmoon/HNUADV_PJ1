@@ -97,7 +97,8 @@ void dialog(char message[]) {
 			for (int j = 3; j < COL_MAX - 54; j++) {
 				back_buf[i][j] = (i == Rmid + 2 || i == ROW_MAX - 35) ? '*' : ' ';
 				if (i == Rmid + 1) {
-					/*printxy(message, i, j);*/
+					gotoxy(i, j);
+					printf("%s", message);
 				}
 			}
 		}
