@@ -58,10 +58,10 @@ void display(void) {
 	print_status();
 }
 
-
+//맵을 넘어가는 dialog 사이즈 구현을 위해 N_ROW, N_COL에서 MAX로 수정
 void draw(void) {
-	for (int row = 0; row < N_ROW; row++) {
-		for (int col = 0; col < N_COL; col++) {
+	for (int row = 0; row < ROW_MAX; row++) {
+		for (int col = 0; col < COL_MAX; col++) {
 			if (front_buf[row][col] != back_buf[row][col]) {
 				front_buf[row][col] = back_buf[row][col];
 				printxy(front_buf[row][col], row, col);
@@ -88,12 +88,16 @@ void dialog(char message[]) {
 		}
 	}
 
-	//MAX 기준이 아닌 각 함수별 크기로 구현됨. 수정 필요.
+	int mid = N_ROW / 3; //최소한으로 dialog 중앙정렬 위해 맵 세로 3등분해서 처음 + 1.
+	
 	do {
-		for (int i = 1; i < ROW_MAX - 8; i++) {
-			back_buf[i][1] = back_buf[i][COL_MAX - 10] = '*';
-			for (int j = 2; j < N_COL - 5; j++) {
-				/*back_buf[i][j] = (i == 1 || i == N_ROW - 9) ? '*' : ' ';;*/
+		for (int i = mid ; i < mid + 3; i++) {
+			back_buf[i][2] = back_buf[i][COL_MAX - 55] = '*';
+			for (int j = 3; j < N_COL - 5; j++) {
+				back_buf[i][j] = (i == mid + 2 || i == mid) ? '*' : ' ';
+				if (i == mid + 1) {
+					printxy(message, i, j);
+				}
 			}
 		}
 		display();
