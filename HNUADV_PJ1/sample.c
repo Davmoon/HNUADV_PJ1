@@ -88,7 +88,8 @@ void sample(void) {
 	sample_init();
 	system("cls");
 	display();
-	dialog("hello world!! you can do");
+	Sleep(1000);
+	dialog("hello world!! you can do asdfasdfasdf");
 	
 	while (1) {
 		// player 0만 손으로 움직임(4방향)

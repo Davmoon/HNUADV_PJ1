@@ -7,6 +7,7 @@
 #define DIALOG_DURATION_SEC		4
 
 void draw(void);
+void draw_MAX(void);
 void print_status(void);
 
 // (zero-base) row행, col열로 커서 이동
@@ -58,14 +59,25 @@ void display(void) {
 	print_status();
 }
 
-// 맵을 넘어가는 dialog 사이즈 구현을 위해 N_ROW, N_COL에서 MAX로 수정, 기본코드 수정 불가하면 추가 함수 필요.
 void draw(void) {
-	for (int row = 0; row < ROW_MAX; row++) {
-		for (int col = 0; col < COL_MAX; col++) {
+	for (int row = 0; row < N_ROW; row++) {
+		for (int col = 0; col < N_COL; col++) {
 			if (front_buf[row][col] != back_buf[row][col]) {
 				front_buf[row][col] = back_buf[row][col];
 				printxy(front_buf[row][col], row, col);
 			}
+		}
+	}
+}
+
+void draw_MAX(void) {
+	for (int row = 0; row < ROW_MAX; row++) {
+		for (int col = 0; col < COL_MAX; col++) {
+			//if (front_buf[row][col] != back_buf[row][col]) {
+			//	front_buf[row][col] = back_buf[row][col];
+			//	
+			//}
+			printxy(back_buf[row][col], row, col);
 		}
 	}
 }
@@ -83,10 +95,9 @@ void dialog(char message[]) {
 
 	for (int i = 0; i < ROW_MAX; i++) {
 		for (int j = 0; j < COL_MAX; j++) {
-			save_buf[i][j] = back_buf[i][j];//현재 출력중인 버퍼를 저장
+			save_buf[i][j] = front_buf[i][j];//현재 출력중인 버퍼를 저장
 		}
 	}
-
 	int Rmid = N_ROW / 3; //최소한으로 dialog 중앙정렬 위해 맵 세로 3등분해서 처음 + 1
 	
 	// '*'로 이루어진 dialog 테두리 출력, 상상력 부족으로 한땀한땀 해봄
@@ -96,7 +107,7 @@ void dialog(char message[]) {
 			back_buf[i][j] = (i == Rmid || i == Rmid + 4) ? '*' : ' ';
 		}
 	}
-	display();
+	draw_MAX();
 
 	int y = Rmid + 2; // message 출력 아래쪽으로 몇칸인지 지정
 	int sec_x = 5; // sec초 출력 옆으로 몇칸인지 지정
@@ -124,11 +135,12 @@ void dialog(char message[]) {
 		}
 	
 	} while (sec != 0);
-
+	system("cls");
 	for (int i = 0; i < ROW_MAX; i++) {
 		for (int j = 0; j < COL_MAX; j++) {
 			back_buf[i][j] = save_buf[i][j];
 		}
 	}
-	display();
+	draw_MAX();
+	
 }
