@@ -130,5 +130,8 @@ void dialog(char message[]) {
 			back_buf[i][j] = save_buf[i][j];
 		}
 	}
+
 	display();
+
+	Sleep(1000); // 정지하는 상태인지 파악하기 위한 TEST CODE
 }
