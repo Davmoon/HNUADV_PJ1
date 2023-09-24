@@ -84,7 +84,7 @@ void dialog(char message[]) {
 	//세이브 버퍼 생성, 새로운 부분 띄우고 복구하기 위함.
 	for (int i = 0; i < ROW_MAX; i++) {
 		for (int j = 0; j < COL_MAX; j++) {
-			save_buf[i][j] = front_buf[i][j];//현재 출력중인 버퍼를 저장.
+			save_buf[i][j] = back_buf[i][j];//현재 출력중인 버퍼를 저장.
 		}
 	}
 
@@ -92,11 +92,16 @@ void dialog(char message[]) {
 	int Cmid = N_COL / 3;
 	
 	do {
-		for (int i = Rmid ; i < ROW_MAX - 32; i++) {
-			back_buf[i][2] = back_buf[i][COL_MAX - 54] = '*';
-			for (int j = 3; j < COL_MAX - 54; j++) {
-				back_buf[i][j] = (i == Rmid + 2 || i == ROW_MAX - 35) ? '*' : ' ';
-				if (i == Rmid + 1) {
+		for (int i = Rmid ; i < Rmid + 5; i++) {
+			back_buf[i][2] = back_buf[i][COL_MAX - 45] = '*';
+			for (int j = 3; j < COL_MAX - 45; j++) {
+				back_buf[i][j] = (i == Rmid || i == Rmid + 4) ? '*' : ' ';
+				if (i == Rmid + 2 && j == 5) {
+					gotoxy(i, j);
+					printf("%d", sec);
+				}
+
+				if (i == Rmid + 2 && j == 10) {
 					gotoxy(i, j);
 					printf("%s", message);
 				}
@@ -104,9 +109,9 @@ void dialog(char message[]) {
 		}
 		display();
 		Sleep(1000);
-		//sec--;
-	} while (sec != 0);
+		sec--;
 	
+	} while (sec != 0);
 
 	for (int i = 0; i < ROW_MAX; i++) {
 		for (int j = 0; j < COL_MAX; j++) {
