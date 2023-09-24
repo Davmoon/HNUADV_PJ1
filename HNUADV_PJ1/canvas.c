@@ -87,19 +87,20 @@ void dialog(char message[]) {
 			save_buf[i][j] = front_buf[i][j];//현재 출력중인 버퍼를 저장.
 		}
 	}
-	
+
 	//MAX 기준이 아닌 각 함수별 크기로 구현됨. 수정 필요.
-	for (int i = 1; i < N_ROW - 8; i++) {
-		back_buf[i][1] = back_buf[i][N_COL - 5] = '*';
-		for (int j = 2; j < N_COL -5; j++) {
-			back_buf[i][j] = (i == 1 || i == N_ROW - 9) ? '*' : ' ';;
+	do {
+		for (int i = 1; i < ROW_MAX - 8; i++) {
+			back_buf[i][1] = back_buf[i][COL_MAX - 10] = '*';
+			for (int j = 2; j < N_COL - 5; j++) {
+				/*back_buf[i][j] = (i == 1 || i == N_ROW - 9) ? '*' : ' ';;*/
+			}
 		}
-	}
-	display();
-	while (sec != 0) {
+		display();
 		Sleep(1000);
 		//sec--;
-	}
+	} while (sec != 0);
+	
 
 	for (int i = 0; i < ROW_MAX; i++) {
 		for (int j = 0; j < COL_MAX; j++) {
