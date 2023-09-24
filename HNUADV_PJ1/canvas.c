@@ -88,15 +88,16 @@ void dialog(char message[]) {
 		}
 	}
 
-	int mid = N_ROW / 3; //최소한으로 dialog 중앙정렬 위해 맵 세로 3등분해서 처음 + 1.
+	int Rmid = N_ROW / 3; //최소한으로 dialog 중앙정렬 위해 맵 세로 3등분해서 처음 + 1.
+	int Cmid = N_COL / 3;
 	
 	do {
-		for (int i = mid ; i < mid + 3; i++) {
-			back_buf[i][2] = back_buf[i][COL_MAX - 55] = '*';
-			for (int j = 3; j < N_COL - 5; j++) {
-				back_buf[i][j] = (i == mid + 2 || i == mid) ? '*' : ' ';
-				if (i == mid + 1) {
-					printxy(message, i, j);
+		for (int i = Rmid ; i < ROW_MAX - 32; i++) {
+			back_buf[i][2] = back_buf[i][COL_MAX - 54] = '*';
+			for (int j = 3; j < COL_MAX - 54; j++) {
+				back_buf[i][j] = (i == Rmid + 2 || i == ROW_MAX - 35) ? '*' : ' ';
+				if (i == Rmid + 1) {
+					/*printxy(message, i, j);*/
 				}
 			}
 		}
