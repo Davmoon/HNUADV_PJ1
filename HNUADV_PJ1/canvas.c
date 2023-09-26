@@ -92,39 +92,35 @@ void dialog(char message[]) {
 	// '*'로 이루어진 dialog 테두리 출력, 상상력 부족으로 한땀한땀 해봄
 	for (int i = Rmid; i < Rmid + 5; i++) {
 		back_buf[i][2] = back_buf[i][COL_MAX - 45] = '*';
+		back_buf[i][2] = back_buf[i][COL_MAX - 45] = '*';
 		for (int j = 3; j < COL_MAX - 45; j++) {
 			back_buf[i][j] = (i == Rmid || i == Rmid + 4) ? '*' : ' ';
 		}
 	}
 	display();
 
-	int y = Rmid + 2; // message 출력 아래쪽으로 몇칸인지 지정
+	int y = 2; // message 출력 아래쪽으로 몇칸인지 지정
 	int sec_x = 4; // sec초 출력 옆으로 몇칸인지 지정
 	int mes_x = 8; // message 출력 옆으로 몇칸인지 지정
 
-	do {
-
-		gotoxy(y, sec_x); // sec초 출력
+	while(sec != 0){
+		gotoxy(Rmid + y, sec_x); // sec초 출력
 		printf("%d", sec);
 
-		gotoxy(y, mes_x); // message 출력
+		gotoxy(Rmid + y, mes_x); // message 출력
 		printf("%s", message);
 
 		Sleep(1000); // 1초 지연
 		sec--; //초 경과 카운트
 		
-		if (sec == 0) {
-			for (int j = sec_x; j < COL_MAX - 46; j++) {
-				gotoxy(y, j); // message 출력부분 빈칸으로 초기화
-				printf(" ");
-			}
-		}
-	
-	
-	} while (sec != 0);
+	}
 
+	system("cls");
+
+	// front 버퍼 비움, back은 save 버퍼로 복구
 	for (int i = 0; i < ROW_MAX; i++) {
 		for (int j = 0; j < COL_MAX; j++) {
+			front_buf[i][j] = ' ';
 			back_buf[i][j] = save_buf[i][j];
 		}
 	}
