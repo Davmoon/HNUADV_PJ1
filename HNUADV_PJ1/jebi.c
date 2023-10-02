@@ -10,17 +10,17 @@
 
 void jebi_init(void);
 void jebi(void);
-void move_manual1(key_t key);
+void j_move_manual(key_t key);
 
-int px[PLAYER_MAX], py[PLAYER_MAX];
+int px[PLAYER_MAX], py[PLAYER_MAX], pic[PLAYER_MAX]; // py, px 삭제 예정, 각 플레이어 선택
 
 void jebi_init(void) {
-	map_init(9, 15);
+	map_init(5, 18);
 
 
 }
 
-void move_manual1(key_t key) {
+void j_move_manual(key_t key) {
 	// 각 방향으로 움직일 때 x, y값 delta
 	static int dx[4] = { -1, 1, 0, 0 };
 	static int dy[4] = { 0, 0, -1, 1 };
@@ -33,18 +33,24 @@ void move_manual1(key_t key) {
 	}
 
 	// 움직여서 놓일 자리
-	int nx, ny;
+	int nx, ny, select;
 	nx = px[0] + dx[dir];
 	ny = py[0] + dy[dir];
-	if (!placable(nx, ny)) {
+	if (select == (0 || 4)) {
 		return;
 	}
 
 	move_tail(0, nx, ny);
 }
 
+void draw_jebi(void) {
+	for (int i = 0; i < 4; i++) {
+
+	}
+}
+
 void jebi(void) {
-	//jebi_init();
+	jebi_init();
 	system("cls");
 	display();
 	
@@ -55,7 +61,7 @@ void jebi(void) {
 		}
 		else if (key != K_UNDEFINED) {
 
-			move_manual1(key);
+			j_move_manual(key);
 		}
 
 	}
