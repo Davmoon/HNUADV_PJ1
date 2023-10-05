@@ -22,11 +22,9 @@ int jjuggumi_init(void) {
 	scanf_s("%d", &n_player);
 
 	// 9명 이상일 경우 오류발생. 9명까지로 제한
-	if (n_player > 9) {
-		do {
-			printf("최대 9명까지 플레이 할 수 있습니다. 다시 입력해주세요 : ");
-			scanf_s("%d", &n_player);
-		} while (n_player > 9);
+	while (n_player > 9){
+		printf("최대 9명까지 플레이 할 수 있습니다. 다시 입력해주세요 : ");
+		scanf_s("%d", &n_player);
 	}
 
 	n_alive = n_player;
