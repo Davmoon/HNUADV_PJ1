@@ -72,19 +72,22 @@ void move_m_random(int pnum, int dir) {
 		switch (percent[randint(0, 9)]) {
 			case 0:
 				nx = px[pnum] + dx[2];
-				ny = py[pnum] + dx[2];
+				ny = py[pnum] + dy[2];
 				break; //¿ÞÂÊÀ¸·Î 
 			case 1:
 				nx = px[pnum] + dx[0];
-				ny = py[pnum] + dx[0];
+				ny = py[pnum] + dy[0];
 				break;
 			case 2:
 				nx = px[pnum] + dx[1];
-				ny = py[pnum] + dx[1];
+				ny = py[pnum] + dy[1];
 				break;
 			case 3:
+				nx = px[pnum];
+				ny = py[pnum];
 				break;
 		}
+		//printf("%d",percent[randint(0, 9)]);
 	} while (!placable(nx, ny));
 
 	move_tail(pnum, nx, ny);
@@ -106,14 +109,14 @@ void mugunghwa(void) {
 			move_manual(key);
 		}
 
-		//for (int i = 1; i < n_player; i++) {
-		//	if (player[i] == true && tick % period[i]) {
-		//		move_m_random(i, 1);
-		//	}
-		//}
+		for (int i = 1; i < n_player; i++) {
+			if (player[i] == true && tick % period[i]) {
+				move_m_random(i, 1);
+			}
+		}
 		
 		display();
-		Sleep(10);
-		tick += 10;
+		Sleep(1000);
+		tick += 1000;
 	}
 }
