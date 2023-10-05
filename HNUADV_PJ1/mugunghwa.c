@@ -114,6 +114,7 @@ void mugunghwa(void) {
 					(px[i] == 3 && py[i] == 2) !=
 					(px[i] == 7 && py[i] == 2)) {
 					player[i] = false;
+					back_buf[px[i]][py[i]] = ' ';
 				}
 			}
 		}
