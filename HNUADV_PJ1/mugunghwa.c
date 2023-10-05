@@ -18,7 +18,7 @@ int px[PLAYER_MAX], py[PLAYER_MAX], period[PLAYER_MAX];  // 각 플레이어 위치, 이
 void m_init(void) {
 	map_init(11, 35);
 	yh_print(4, 1, 3, true);
-	//player[2] = false; player[5] = false; //죽은 플레이어 테스트 코드
+	//player[2] = false; player[5] = false; //죽은 플레이어 test 코드
 
 	int x, y;
 	// 끝 자리에 살아남은 플레이어가 랜덤하게 배치되는 코드
@@ -63,7 +63,7 @@ bool cant_seek_behind(int row, int col) {
 
 void move_m_random(int pnum, int dir) {
 	int nx, ny;
-	int percent[10] = { 0,0,0,0,0,0,0,1,2,3 };
+	int percent[10] = { 0,0,0,0,0,0,0,1,2,3 }; // 70%, 10%, 10%, 10% 구현
 
 	static int dx[4] = { -1, 1, 0, 0 };
 	static int dy[4] = { 0, 0, -1, 1 };
@@ -71,23 +71,18 @@ void move_m_random(int pnum, int dir) {
 	do {
 		switch (percent[randint(0, 9)]) {
 			case 0:
-				nx = px[pnum] + dx[2];
-				ny = py[pnum] + dy[2];
-				break; //왼쪽으로 
+				nx = px[pnum] + dx[2]; ny = py[pnum] + dy[2];
+				break; //왼쪽으로
 			case 1:
-				nx = px[pnum] + dx[0];
-				ny = py[pnum] + dy[0];
-				break;
+				nx = px[pnum] + dx[0]; ny = py[pnum] + dy[0];
+				break; //위쪽으로
 			case 2:
-				nx = px[pnum] + dx[1];
-				ny = py[pnum] + dy[1];
-				break;
+				nx = px[pnum] + dx[1]; ny = py[pnum] + dy[1];
+				break; //아래쪽으로
 			case 3:
-				nx = px[pnum];
-				ny = py[pnum];
-				break;
+				nx = px[pnum]; ny = py[pnum];
+				break; //제자리에
 		}
-		//printf("%d",percent[randint(0, 9)]);
 	} while (!placable(nx, ny));
 
 	move_tail(pnum, nx, ny);
@@ -110,13 +105,27 @@ void mugunghwa(void) {
 		}
 
 		for (int i = 1; i < n_player; i++) {
-			if (player[i] == true && tick % period[i]) {
+			if (player[i] == true && tick % period[i] == 0) {
 				move_m_random(i, 1);
+				
+				// 영희 근처 가면 잡는 함수 좀 더럽다...
+				if ((px[i] >= 3 && px[i] <= 7) &&
+					(py[i] == 1 || py[i] == 2) !=
+					(px[i] == 3 && py[i] == 2) !=
+					(px[i] == 7 && py[i] == 2)) {
+					player[i] = false;
+				}
 			}
+		}
+		if ((px[0] >= 3 && px[0] <= 7) &&
+			(py[0] == 1 || py[0] == 2) !=
+			(px[0] == 3 && py[0] == 2) !=
+			(px[0] == 7 && py[0] == 2)) {
+			player[0] = false;
 		}
 		
 		display();
-		Sleep(1000);
-		tick += 1000;
+		Sleep(10);
+		tick += 10;
 	}
 }
