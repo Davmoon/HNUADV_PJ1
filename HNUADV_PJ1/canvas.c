@@ -103,12 +103,12 @@ void dialog(char message[]) {
 	int sec_x = 4; // sec초 출력 옆으로 몇칸인지 지정
 	int mes_x = 8; // message 출력 옆으로 몇칸인지 지정
 
+	gotoxy(Rmid + y, mes_x); // message 출력
+	printf("%s", message);
+
 	while(sec != 0){
 		gotoxy(Rmid + y, sec_x); // sec초 출력
 		printf("%d", sec);
-
-		gotoxy(Rmid + y, mes_x); // message 출력
-		printf("%s", message);
 
 		Sleep(1000); // 1초 지연
 		sec--; //초 경과 카운트

@@ -16,7 +16,7 @@ bool cant_seek_behind(int, int); //뒤에 존재하는 경우 확인 함수. 움직일 경우 자�
 void yh_no_watch(int, bool);
 
 int px[PLAYER_MAX], py[PLAYER_MAX], period[PLAYER_MAX];  // 각 플레이어 위치, 이동 주기
-int yh_period[2] = { 1000, 1000 };
+int yh_period[2] = { 1000, 2000 };
 
 void m_init(void) {
 	map_init(11, 35);
@@ -115,9 +115,19 @@ void mugunghwa(void) {
 	m_init();
 	system("cls");
 	display();
-	//dialog("\"무궁화 꽃이 피었습니다\"");
+	dialog("\"무궁화 꽃이 피었습니다\"");
 
 	while (1) {
+		if (tick % yh_period[0] == 0) {
+			gotoxy(N_ROW + 1, 0);
+			printf("hello moto");
+		}
+		if (tick % yh_period[1] == 0) {
+			gotoxy(N_ROW + 1, 0);
+			printf("                                        ");
+			// 뭔가 아닌것 같긴 하지만 일단 작동은 해야하니...
+		}
+
 		key_t key = get_key();
 		if (key == K_QUIT) {
 			break;
