@@ -15,7 +15,7 @@
 #define K_QUIT		'q'
 #define K_UNDEFINED	'\0'
 
-typedef int key_t;
+typedef int key_t; // key_t라는 int 타입의 별명을 지어줌(알아보기 쉽게)
 
 key_t get_key(void);
 
