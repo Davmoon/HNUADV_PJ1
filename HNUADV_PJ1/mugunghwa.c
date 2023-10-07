@@ -13,10 +13,9 @@ void yh_print(int, int, int, bool); //영희 생성 함수 x, y, 영희 블록 수, 뒤돌아�
 void move_m_random(int, int); // 백분율 부분 https://coding-factory.tistory.com/667 참조
 void pass_zone(void);
 bool cant_seek_behind(int, int); //뒤에 존재하는 경우 확인 함수. 움직일 경우 자신 기준으로 비교하면 될 듯?
-void yh_no_watch(int, bool);
+void yh_no_watch(int* sent_len, int yh_period[]);
 
 int px[PLAYER_MAX], py[PLAYER_MAX], period[PLAYER_MAX];  // 각 플레이어 위치, 이동 주기
-int yh_period[2] = { 1000, 2000 };
 
 void m_init(void) {
 	map_init(11, 35);
@@ -107,26 +106,35 @@ void pass_zone(void) {
 	}
 }
 
-void yh_no_watch(int a, bool b) {
-	/*if (tick % yh_period[1] == 0)*/
+void yh_no_watch(int *sent_len, int yh_period[]) {
+	char sent[] = "무궁화꽃이피었습니다";
+	int len = *sent_len; //너무 길어서 넣음
+
+	if (tick % yh_period[0] == 0) {
+		if (len != 10) {
+			gotoxy(N_ROW + 1, len * 2);
+			printf("%c%c", sent[len * 2], sent[len * 2 + 1]);
+			*sent_len += 1;
+
+			// 테스트 케이스
+			gotoxy(N_ROW + 2, len * 2);
+			printf("%d", len);
+		}
+	}
 }
 
 void mugunghwa(void) {
 	m_init();
 	system("cls");
 	display();
-	dialog("\"무궁화 꽃이 피었습니다\"");
+	//dialog("\"무궁화 꽃이 피었습니다\"");
+
+	//전역변수에서 지역변수로
+	int yh_period[2] = { 500, 2000 }; //
+	int sent_len = 0;
 
 	while (1) {
-		if (tick % yh_period[0] == 0) {
-			gotoxy(N_ROW + 1, 0);
-			printf("hello moto");
-		}
-		if (tick % yh_period[1] == 0) {
-			gotoxy(N_ROW + 1, 0);
-			printf("                                        ");
-			// 뭔가 아닌것 같긴 하지만 일단 작동은 해야하니...
-		}
+		yh_no_watch(&sent_len, yh_period);
 
 		key_t key = get_key();
 		if (key == K_QUIT) {
