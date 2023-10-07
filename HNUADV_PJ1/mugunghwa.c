@@ -44,9 +44,9 @@ void m_init(void) {
 }
 
 void yh_print(int x, int y, int num, bool look) {
-	char icon = '@';
+	char icon = '@'; //플레이어를 보고 있는 상황
 
-	if (!look) icon = '*';
+	if (!look) icon = '*'; //등 뒤로 돌고 있는 상황
 
 	for (int i = 0; i < num; i++) {
 		back_buf[x + i][y] = icon;
@@ -157,8 +157,19 @@ void yh_no_watch(int *sent_len, int yh_period[]) {
 
 void catch_move(int *sent_len, int i) {
 	int len = *sent_len;
+	
+	
 
-	if (len == 10) {
+	// 3초 대기시간인 경우에 입력 들어오거나(0) 움직이면(1~9) 잡음
+	if (player[i] == true && len == 10) {
+		//for (int j = 1; j < py[i]; j++) {
+		//	if (back_buf[px[i]][py[j]] != ' ') {
+		//		continue;
+		//	}
+		//	else {
+		//		
+		//	}
+		//}
 		player[i] = false;
 		back_buf[px[i]][py[i]] = ' ';
 		n_alive--;
@@ -171,7 +182,7 @@ void mugunghwa(void) {
 	display();
 	//dialog("\"무궁화 꽃이 피었습니다\"");
 
-	int yh_period[] = { 500, 500, 0 }; // 무궁화 꽃 t, 피었습니다 t, 3초 카운터 t
+	int yh_period[] = { 500, 500, 0 }; // 무궁화 꽃 t, 피었습니다 t, 무궁화 전용 타이머(tick에 따르면 오차생김)
 	int sent_len = 0; // 출력된 char sent[] 글자 수 카운트
 	int mv_user_hy_front[] = {0,0,0,0,0,0,0,0,0,1};
 
@@ -192,12 +203,13 @@ void mugunghwa(void) {
 		}
 
 		for (int i = 1; i < n_player; i++) {
-			period[i] = randint(100, 500);
-			if (player[i] == true && tick % period[i] == 0) {
+			period[i] = randint(100, 500); // 불규칙적인 플레이어 주기 구현
+			if (tick % period[i] == 0) {
 				if (sent_len <= 9) {
 					move_m_random(i);
 				}
-				else if (sent_len == 10 && mv_user_hy_front[randint(0, 9)] == 1) {
+				
+				else if (mv_user_hy_front[randint(0, 9)] == 1 && player[i] == true) {
 					catch_move(&sent_len, i);
 				}
 			}
