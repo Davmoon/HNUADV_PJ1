@@ -109,16 +109,46 @@ void pass_zone(void) {
 void yh_no_watch(int *sent_len, int yh_period[]) {
 	char sent[] = "무궁화꽃이피었습니다";
 	int len = *sent_len; //너무 길어서 넣음
+	int pm_time = 100; // 느려지거나 빨라지기 위해 더하는 밀리sec
 
-	if (tick % yh_period[0] == 0) {
-		if (len != 10) {
-			gotoxy(N_ROW + 1, len * 2);
-			printf("%c%c", sent[len * 2], sent[len * 2 + 1]);
+	if (len < 10) {
+		yh_print(4, 1, 3, false); // 영희 뒤돌아봄
+		gotoxy(N_ROW + 1, len * 2); // 출력 장소로 이동
+
+		// 겹치는 코드 나중에 가능하면 수정
+		if (len < 5 && tick % yh_period[0] == 0) {
+			printf("%c%c", sent[len * 2], sent[len * 2 + 1]); //한글은 2bit, 따라서 %c%c 사용
 			*sent_len += 1;
+		}
+		else if (len != 10 && len >= 5 && tick % yh_period[1] == 0) {
+			printf("%c%c", sent[len * 2], sent[len * 2 + 1]); //한글은 2bit, 따라서 %c%c 사용
+			*sent_len += 1;
+		}
+	}
+	else if (len == 10){
+		
+		yh_period[2] += 10; // 무궁화 출력 이후 카운트 해야 하기 때문
+		yh_print(4, 1, 3, true);
 
-			// 테스트 케이스
-			gotoxy(N_ROW + 2, len * 2);
-			printf("%d", len);
+		// 3초간 멈춤 테스트 코드
+		if (yh_period[2] % 1000 == 0) {
+			gotoxy(N_ROW + 2, 0);
+			printf("%d초 대기", 4 - (yh_period[2] / 1000));
+		}
+
+		if (yh_period[2] == 3000) {
+			yh_print(4, 1, 3, true);
+			*sent_len = 0;
+			yh_period[2] = 0;
+
+			gotoxy(N_ROW + 1, 0); // 무궁화 출력을 깨끗이 비움 (더 좋은 방법이 생각나지 않음...)
+			printf("                    "); // 2bit이므로 20칸
+
+			// pm_time을 빼서 음수가 되지 않도록 하기 위함.
+			if (yh_period[1] > pm_time) {
+				yh_period[0] += pm_time;
+				yh_period[1] -= pm_time;
+			}
 		}
 	}
 }
@@ -130,8 +160,8 @@ void mugunghwa(void) {
 	//dialog("\"무궁화 꽃이 피었습니다\"");
 
 	//전역변수에서 지역변수로
-	int yh_period[2] = { 500, 2000 }; //
-	int sent_len = 0;
+	int yh_period[] = { 600, 600, 0 }; // 무궁화 꽃, 피었습니다, 3초 카운터
+	int sent_len = 0; // 출력된 char sent[] 글자 수 카운트
 
 	while (1) {
 		yh_no_watch(&sent_len, yh_period);
