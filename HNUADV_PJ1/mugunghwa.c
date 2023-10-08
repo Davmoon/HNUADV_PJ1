@@ -17,7 +17,6 @@ void yh_no_watch(int* sent_len, int yh_period[]);
 void catch_move(int* sent_len, int, int yh_period[]);
 
 int px[PLAYER_MAX], py[PLAYER_MAX], period[PLAYER_MAX]; // 각 플레이어 위치, 이동 주기, 패스 여부
-int n_pass = 0;// 임시 전역변수
 
 void m_init(void) {
 	map_init(11, 35);
@@ -142,8 +141,6 @@ void yh_no_watch(int *sent_len, int yh_period[]) {
 			yh_print(4, 1, 3, true);
 			*sent_len = 0;
 			yh_period[2] = 0; //무궁화 3초 대기 타이머 초기화
-			yh_period[3]++;
-
 
 			gotoxy(N_ROW + 1, 0); // 무궁화 출력을 깨끗이 비움 (더 좋은 방법이 생각나지 않음...)
 			printf("                    "); // 2bit이므로 20칸
@@ -159,13 +156,15 @@ void yh_no_watch(int *sent_len, int yh_period[]) {
 
 void catch_move(int *sent_len, int i, int yh_period[]) {
 	int len = *sent_len;
-	int mv_user_hy_front[] = { 1,1,1,1,1,1,1,1,1,1 }; //10% 확률로 움직여 탈락
+	int mv_user_hy_front[] = { 0,0,0,0,0,0,0,0,0,1 }; //10% 확률로 움직여 탈락
 
-	// 3초 대기시간인 경우(len == 10) 입력 들어오거나(0) 움직이면(1~9) 잡음
+	//3초 대기시간인 경우(len == 10) 입력 들어오거나(0) 움직이면(1~9) 잡음
 	if (len == 10 && player[i] == true) {
-		player[i] = false;
-		back_buf[px[i]][py[i]] = ' ';
-		n_alive--;
+		if (mv_user_hy_front[randint(0, 9)] == 1) {
+			player[i] = false;
+			back_buf[px[i]][py[i]] = ' ';
+			n_alive--;
+		}
 	}
 }
 
@@ -187,12 +186,16 @@ void mugunghwa(void) {
 		}
 		else if (key != K_UNDEFINED) {
 			move_manual(key);
-			catch_move(&sent_len, 0, yh_period);
+			if (sent_len == 10 && player[0] == true) {
+				player[0] = false;
+				back_buf[px[0]][py[0]] = ' ';
+				n_alive--;
+			}
 		}
 
 		for (int i = 1; i < n_player; i++) {
 			period[i] = randint(20, 50); // 불규칙적인 플레이어 주기 구현
-			if (pass[i] == false && tick % period[i] == 0) {
+			if (tick % period[i] == 0) {
 				if (sent_len <= 9) {
 					move_m_random(i);
 				}
