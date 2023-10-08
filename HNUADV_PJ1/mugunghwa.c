@@ -149,11 +149,14 @@ void catch_move() {
 
 	//플레이어 1명이 10%확율로 죽는 코드 (while 문에 넣으면 10% * (3000 / 10)번 시도되어 불가)
 	for (int i = 1; i < 8; i++) {
-		if (player[i] == true && randint(0, 9) == 9) {
-			player[i] = false;
-			back_buf[px[i]][py[i]] = ' ';
-			n_alive--;
-			pass[i] = true;
+		if (player[i] == true) {
+			for (int j = 1; j < 8; j++) {
+				if (px[i] == px[j] && py[j] > py[i]) {
+					player[i] = false;
+					back_buf[px[i]][py[i]] = ' ';
+					n_alive--;
+				}
+			}
 		}
 	}
 }
@@ -186,9 +189,13 @@ void mugunghwa(void) {
 		else if (key != K_UNDEFINED) {
 			move_manual(key);
 			if (len == 10 && player[0] == true && pass[0] == false) {
-				player[0] = false;
-				back_buf[px[0]][py[0]] = ' ';
-				n_alive--;
+				for (int j = 1; j < 8; j++) {
+					if (px[0] == px[j] && py[j] > py[0]) {
+						player[0] = false;
+						back_buf[px[0]][py[0]] = ' ';
+						n_alive--;
+					}
+				}
 			}
 		}
 
