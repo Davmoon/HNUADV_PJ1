@@ -30,6 +30,7 @@ int jjuggumi_init(void) {
 	n_alive = n_player;
 	for (int i = 0; i < n_player; i++) {
 		player[i] = true;
+		pass[i] = false;
 	}
 	return 0;
 }

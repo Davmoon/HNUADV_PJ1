@@ -7,6 +7,7 @@
 #define PLAYER_MAX		10
 
 bool player[PLAYER_MAX];  // 기본값 true, 탈락하면 false
+bool pass[PLAYER_MAX]; // 기본값 false, 통과하면 true
 int n_player, n_alive;
 int tick;  // 시계
 
