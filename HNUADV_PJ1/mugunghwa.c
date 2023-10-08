@@ -12,9 +12,9 @@ void m_init(void);
 void yh_print(int, int, int, bool); //영희 생성 함수 x, y, 영희 블록 수, 뒤돌아봄 O(true), X(false)
 void move_m_random(int); // 백분율 부분 https://coding-factory.tistory.com/667 참조
 void pass_zone(void);
-bool cant_seek_behind(int, int); //뒤에 존재하는 경우 확인 함수. 움직일 경우 자신 기준으로 비교하면 될 듯?
 void yh_no_watch(int yh_period[]);
-void catch_move(int);
+void catch_move();
+void phase_dialog(char);
 
 int px[PLAYER_MAX], py[PLAYER_MAX], period[PLAYER_MAX]; // 각 플레이어 위치, 이동 주기, 패스 여부
 int len = 0; //'무궁화꽃이 피었습니다' 출력된 길이 저장
@@ -34,7 +34,7 @@ void m_init(void) {
 			} while (!placable(x, y));
 			px[i] = x;
 			py[i] = y;
-			period[i] = randint(80, 150);
+			//period[i] = randint(80, 150);
 
 			back_buf[px[i]][py[i]] = '0' + i;
 		}
@@ -51,16 +51,6 @@ void yh_print(int x, int y, int num, bool look) {
 	for (int i = 0; i < num; i++) {
 		back_buf[x + i][y] = icon;
 	}
-}
-
-// 만들 예정
-bool cant_seek_behind(int row, int col) {
-	if (row < 0 || row >= N_ROW ||
-		col < 0 || col >= N_COL ||
-		back_buf[row][col] != ' ') {
-		return false;
-	}
-	return true;
 }
 
 void move_m_random(int pnum) {
@@ -114,7 +104,7 @@ void yh_no_watch(int yh_period[]) {
 		gotoxy(N_ROW + 1, len * 2); // 출력 장소로 이동
 
 		// 겹치는 코드 나중에 가능하면 수정
-		if (len < 5 &&  yh_period[2] % yh_period[0] == 0) {
+		if (len <= 4 && yh_period[2] % yh_period[0] == 0) {
 			printf("%c%c", sent[len * 2], sent[len * 2 + 1]); //한글은 2bit, 따라서 %c%c 사용
 			len += 1;
 		}
@@ -124,6 +114,7 @@ void yh_no_watch(int yh_period[]) {
 
 			if (len == 10) {
 				yh_period[2] = 0; //무궁화 출력 타이머 초기화
+				catch_move(); // len 10일때도 한번만 실행됨(나이스!!!!!)
 			}
 		}
 	}
@@ -133,8 +124,8 @@ void yh_no_watch(int yh_period[]) {
 		yh_period[2] += 10; // 무궁화 출력 이후 카운트 해야 하기 때문
 
 		// 대기시간 카운터 테스트 코드
-		gotoxy(N_ROW + 2, 0);
-		printf("%d 밀리초 대기", yh_period[2]);
+		//gotoxy(N_ROW + 2, 0);
+		//printf("%d 밀리초 대기", yh_period[2]);
 
 		if (yh_period[2] % 3000 == 0) {
 			yh_print(4, 1, 3, true);
@@ -154,16 +145,21 @@ void yh_no_watch(int yh_period[]) {
 	}
 }
 
-void catch_move(int i) {
+void catch_move() {
 
-	//3초 대기시간인 경우(len == 10) 입력 들어오거나(0) 움직이면(1~9) 잡음
-	if (len == 10 && player[i] == true) {
-		if (randint(0,9) == 1) {
+	//플레이어 1명이 10%확율로 죽는 코드 (while 문에 넣으면 10% * (3000 / 10)번 시도되어 불가)
+	for (int i = 1; i < 8; i++) {
+		if (player[i] == true && randint(0, 9) == 9) {
 			player[i] = false;
 			back_buf[px[i]][py[i]] = ' ';
 			n_alive--;
+			pass[i] = true;
 		}
 	}
+}
+
+void phase_dialog(char passmember) {
+	// pass[] 배열을 만들어놨습니다. 사용해주세요.
 }
 
 void mugunghwa(void) {
@@ -172,10 +168,15 @@ void mugunghwa(void) {
 	display();
 	//dialog("\"무궁화 꽃이 피었습니다\"");
 
-	int yh_period[] = { 200, 200, 0}; // 무궁화 꽃 t, 피었습니다 t, 무궁화 전용 타이머(tick에 따르면 오차생김), 페이즈 패스 체크
+	int yh_period[] = { 300, 300, 0}; // 무궁화 꽃 t, 피었습니다 t, 무궁화 전용 타이머(tick에 따르면 오차생김), 페이즈 패스 체크
 	
 
 	while (1) {
+
+		if (n_alive == 1) {
+			break;
+		}
+
 		yh_no_watch(yh_period);
 		
 		key_t key = get_key();
@@ -184,29 +185,20 @@ void mugunghwa(void) {
 		}
 		else if (key != K_UNDEFINED) {
 			move_manual(key);
-			if (len == 10 && player[0] == true) {
+			if (len == 10 && player[0] == true && pass[0] == false) {
 				player[0] = false;
 				back_buf[px[0]][py[0]] = ' ';
 				n_alive--;
 			}
 		}
 
-		if (a == true || len <= 9) {
-			for (int i = 1; i < n_player; i++) {
-				if (tick % period[i] == 0) {
-					if (len <= 9) {
-						move_m_random(i);
-					}
-					else if (len == 10 && player[i] == true) {
-						if (randint(0, 9) == 1) {
-							player[i] = false;
-							back_buf[px[i]][py[i]] = ' ';
-							n_alive--;
-						}
-					}
+		for (int i = 1; i < n_player; i++) {
+			period[i] = randint(100, 200); //매번 다른 진행속도
+			if (tick % period[i] == 0) {
+				if (len <= 9) {
+					move_m_random(i);
 				}
 			}
-			a = false;
 		}
 
 		display();
