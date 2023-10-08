@@ -14,10 +14,11 @@ void move_m_random(int); // 백분율 부분 https://coding-factory.tistory.com/667 �
 void pass_zone(void);
 bool cant_seek_behind(int, int); //뒤에 존재하는 경우 확인 함수. 움직일 경우 자신 기준으로 비교하면 될 듯?
 void yh_no_watch(int yh_period[]);
-void catch_move(int, int yh_period[]);
+void catch_move(int);
 
 int px[PLAYER_MAX], py[PLAYER_MAX], period[PLAYER_MAX]; // 각 플레이어 위치, 이동 주기, 패스 여부
-int len = 0;
+int len = 0; //'무궁화꽃이 피었습니다' 출력된 길이 저장
+bool a = true;
 
 void m_init(void) {
 	map_init(11, 35);
@@ -33,7 +34,7 @@ void m_init(void) {
 			} while (!placable(x, y));
 			px[i] = x;
 			py[i] = y;
-			period[i] = randint(50, 100);
+			period[i] = randint(80, 150);
 
 			back_buf[px[i]][py[i]] = '0' + i;
 		}
@@ -139,6 +140,7 @@ void yh_no_watch(int yh_period[]) {
 			yh_print(4, 1, 3, true);
 			len = 0;
 			yh_period[2] = 0; //무궁화 3초 대기 타이머 초기화
+			a = true;
 
 			gotoxy(N_ROW + 1, 0); // 무궁화 출력을 깨끗이 비움 (더 좋은 방법이 생각나지 않음...)
 			printf("                    "); // 2bit이므로 20칸
@@ -152,12 +154,11 @@ void yh_no_watch(int yh_period[]) {
 	}
 }
 
-void catch_move(int i, int yh_period[]) {
-	int mv_user_hy_front[] = { 0,0,0,0,0,0,0,0,0,1 }; //10% 확률로 움직여 탈락
+void catch_move(int i) {
 
 	//3초 대기시간인 경우(len == 10) 입력 들어오거나(0) 움직이면(1~9) 잡음
 	if (len == 10 && player[i] == true) {
-		if (mv_user_hy_front[randint(0, 9)] == 1) {
+		if (randint(0,9) == 1) {
 			player[i] = false;
 			back_buf[px[i]][py[i]] = ' ';
 			n_alive--;
@@ -171,7 +172,8 @@ void mugunghwa(void) {
 	display();
 	//dialog("\"무궁화 꽃이 피었습니다\"");
 
-	int yh_period[] = { 200, 200, 0, 0 }; // 무궁화 꽃 t, 피었습니다 t, 무궁화 전용 타이머(tick에 따르면 오차생김), 페이즈 패스 체크
+	int yh_period[] = { 200, 200, 0}; // 무궁화 꽃 t, 피었습니다 t, 무궁화 전용 타이머(tick에 따르면 오차생김), 페이즈 패스 체크
+	
 
 	while (1) {
 		yh_no_watch(yh_period);
@@ -188,15 +190,23 @@ void mugunghwa(void) {
 				n_alive--;
 			}
 		}
-		for (int i = 1; i < n_player; i++) {
-			if (tick % period[i] == 0) {
-				if (len <= 9) {
-					move_m_random(i);
-				}
-				else{
-					//catch_move(&sent_len, i, yh_period);
+
+		if (a == true || len <= 9) {
+			for (int i = 1; i < n_player; i++) {
+				if (tick % period[i] == 0) {
+					if (len <= 9) {
+						move_m_random(i);
+					}
+					else if (len == 10 && player[i] == true) {
+						if (randint(0, 9) == 1) {
+							player[i] = false;
+							back_buf[px[i]][py[i]] = ' ';
+							n_alive--;
+						}
+					}
 				}
 			}
+			a = false;
 		}
 
 		display();
