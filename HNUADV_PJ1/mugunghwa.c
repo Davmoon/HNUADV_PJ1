@@ -22,7 +22,7 @@ bool a = true;
 
 void m_init(void) {
 	map_init(11, 35);
-	yh_print(4, 1, 3, true);
+	yh_print(3, 1, 5, true);
 
 	int x, y;
 	// 끝 자리에 살아남은 플레이어가 랜덤하게 배치되는 코드
@@ -82,13 +82,15 @@ void move_m_random(int pnum) {
 
 void pass_zone(void) {
 
-	//9명인 경우에 맞추어 
+	//9명인 경우에 맞추어 yh 5개로 수정
 	for (int i = 0; i < n_player; i++) {
-		if ((px[i] == 3 && py[i] == 1) ||
+		if ((px[i] == 2 && py[i] == 1) ||
+			(px[i] == 3 && py[i] == 2) ||
 			(px[i] == 4 && py[i] == 2) ||
 			(px[i] == 5 && py[i] == 2) ||
 			(px[i] == 6 && py[i] == 2) ||
-			(px[i] == 7 && py[i] == 1)){
+			(px[i] == 7 && py[i] == 2) ||
+			(px[i] == 8 && py[i] == 1)) {
 
 			back_buf[px[i]][py[i]] = ' ';
 			pass[i] = true;
@@ -101,7 +103,7 @@ void yh_no_watch(int yh_period[]) {
 	int pm_time = 20; // 느려지거나 빨라지기 위해 더하는 밀리sec
 
 	if (len <= 9) {
-		yh_print(4, 1, 3, false); // 영희 뒤돌아봄
+		yh_print(3, 1, 5, false); // 영희 뒤돌아봄
 		gotoxy(N_ROW, len * 2); // 출력 장소로 이동
 
 		if (len <= 4 && yh_period[2] % yh_period[0] == 0) {
@@ -120,7 +122,7 @@ void yh_no_watch(int yh_period[]) {
 	}
 	else if (len == 10){
 
-		yh_print(4, 1, 3, true);
+		yh_print(3, 1, 5, true);
 		yh_period[2] += 10; // 무궁화 출력 이후 카운트 해야 하기 때문
 
 		// 대기시간 카운터 테스트 코드
@@ -188,7 +190,7 @@ void mugunghwa(void) {
 	system("cls");
 	display();
 	//dialog("\"무궁화 꽃이 피었습니다\"");
-	int yh_period[] = { 300, 300, 0}; // 무궁화 꽃 t, 피었습니다 t, 무궁화 전용 타이머(tick에 따르면 오차생김), 페이즈 패스 체크
+	int yh_period[] = { 300, 300, 0}; // 무궁화 꽃 t, 피었습니다 t, 무궁화 전용 타이머(tick에 따르면 오차생김)
 	
 	while (1) {
 		if (n_alive == 1) {
@@ -225,7 +227,7 @@ void mugunghwa(void) {
 		display();
 		pass_zone();
 		Sleep(10);
-		tick += 10; // 시스템 시간
+		//tick += 10; // (시스템 시간) 여기선 안씀
 		yh_period[2] += 10; // 무궁화 전용 타이머
 	}
 }
