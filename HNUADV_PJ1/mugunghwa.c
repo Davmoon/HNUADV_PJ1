@@ -80,24 +80,25 @@ void mv_m_random(int pnum) {
 }
 
 void pass_zone(void) {
-
 	//9명인 경우에 맞추어 yh 5개로 수정
 	for (int i = 0; i < n_player; i++) {
-		if ((px[i] == 3 && py[i] == 1) ||
-			(px[i] == 4 && py[i] == 2) ||
-			(px[i] == 5 && py[i] == 2) ||
-			(px[i] == 6 && py[i] == 2) ||
-			(px[i] == 7 && py[i] == 1)) {
+		if (player[i] == true) {
+			if ((px[i] == 3 && py[i] == 1) ||
+				(px[i] == 4 && py[i] == 2) ||
+				(px[i] == 5 && py[i] == 2) ||
+				(px[i] == 6 && py[i] == 2) ||
+				(px[i] == 7 && py[i] == 1)) {
 
-			back_buf[px[i]][py[i]] = ' ';
-			pass[i] = true;
-		}	
+				back_buf[px[i]][py[i]] = ' ';
+				pass[i] = true;
+			}
+		}
 	}
 }
 
 void yh_no_watch(int yh_period[]) {
 	char sent[] = "무궁화꽃이피었습니다";
-	int pm_time = 50; // 느려지거나 빨라지기 위해 더하는 밀리sec
+	int pm_time = 40; // 느려지거나 빨라지기 위해 더하는 밀리sec
 
 	if (len <= 9) {
 		yh_print(4, 1, 3, false); // 영희 off
@@ -127,7 +128,7 @@ void yh_no_watch(int yh_period[]) {
 
 		// 대기시간 카운터 테스트 코드
 		gotoxy(N_ROW + 1, 0);
-		printf("%d 밀리초 대기", tick);
+		printf("%d 밀리초 대기", yh_period[2]);
 
 		if (yh_period[2] % 3000 == 0) {
 			yh_print(4, 1, 3, true); //영희 on
@@ -153,6 +154,7 @@ void ten_mv() {
 			mv_m_random(i);
 			catch_move(i);
 			//player[i] = false;
+			//back_buf[px[i]][py[i]] = ' ';
 		}
 	}
 }
@@ -161,27 +163,26 @@ void catch_move(int a) {
 	int al_chk_count = 0; //플레어어 모두 체크해야 결정할 수 있음.
 	for (int i = 0; i < n_player; i++) {
 
-		
-			// if문의 조건 < 에서 자기자신은 걸러짐 (등호 없음)
-			if (player[i] == true && pass[i] == false && py[i] < py[a] && px[i] == px[a]) {
-				//테스트 좌표 출력
-				gotoxy(N_ROW + 3, 0);
-				printf("pass 좌표는: %d %d | %d %d", px[i], py[i], px[a], px[a]);
+		// if문의 조건 < 에서 자기자신은 걸러짐 (등호 없음)
+		if (player[i] == true && pass[i] == false && py[i] < py[a] && px[i] == px[a]) {
+			//테스트 좌표 출력
+			gotoxy(N_ROW + 3, 0);
+			printf("%d pass 좌표는: %d %d | %d %d", a, px[i], py[i], px[a], py[a]);
 
-				break;
-			}
-			else { al_chk_count++; }
+			break;
+		}
+		else { al_chk_count++; }
 
-			// 모두 체크를 완료했는데도 앞에 아무도없으면 죽이기
-			if (player[a] == true && al_chk_count == n_player) {
-				//테스트 좌표 출력
-				gotoxy(N_ROW + 2, 0);
-				printf("0번 kill 좌표는: %d %d | %d %d", px[i], py[i], px[a], px[a]);
+		// 모두 체크를 완료했는데도 앞에 아무도없으면 죽이기
+		if (player[a] == true && pass [a] == false && al_chk_count == n_player) {
+			//테스트 좌표 출력
+			gotoxy(N_ROW + 2, 0);
+			printf("%d kill 좌표는: %d %d | %d %d", a, px[i], py[i], px[a], py[a]);
 
-				player[a] = false;
-				back_buf[px[a]][py[a]] = ' ';
-				n_alive--;
-			}
+			player[a] = false;
+			back_buf[px[a]][py[a]] = ' ';
+			n_alive--;
+		}
 	}
 }
 
@@ -189,10 +190,17 @@ void mugunghwa(void) {
 	m_init();
 	system("cls");
 	display();
-	//dialog("\"무궁화 꽃이 피었습니다\"");
-	int yh_period[] = { 500, 500, 0 }; // 무궁화 꽃 t, 피었습니다 t, 무궁화 전용 타이머(tick에 따르면 오차생김)
-	
+
+	/*char msg[50] = { 0 };
+	sprintf_s(msg, "hello");
+	printf(msg);*/
+
+	//dialog(msg);
+	int yh_period[] = { 400, 400, 0 }; // 무궁화 꽃 t, 피었습니다 t, 무궁화 전용 타이머(tick에 따르면 오차생김)
+
 	while (1) {
+		//int kill[9] = { 0 };
+
 		if (n_alive == 1) {
 			break;
 		}
