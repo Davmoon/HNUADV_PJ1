@@ -33,7 +33,7 @@ void m_init(void) {
 			} while (!placable(x, y));
 			px[i] = x;
 			py[i] = y;
-			period[i] = randint(80, 150);
+			period[i] = randint(100, 150);
 
 			back_buf[px[i]][py[i]] = '0' + i;
 		}
@@ -102,7 +102,7 @@ void yh_no_watch(int yh_period[]) {
 	int pm_time = 40; // 느려지거나 빨라지기 위해 더하는 밀리sec
 
 	if (len <= 9) {
-		yh_print(3, 1, 5, false); // 영희 뒤돌아봄
+		yh_print(3, 1, 5, false); // 영희 off
 		gotoxy(N_ROW, len * 2); // 출력 장소로 이동
 
 		// 겹치는 코드 나중에 가능하면 수정
@@ -133,8 +133,8 @@ void yh_no_watch(int yh_period[]) {
 		printf("%d 밀리초 대기", yh_period[2]);
 
 		if (yh_period[2] % 3000 == 0) {
-			yh_print(4, 1, 3, true);
-			len = 0;
+			yh_print(3, 1, 5, true); //영희 on
+			len = 0; //무궁화 한 페이즈 종료, 새로운 페이즈 시작 위해 초기화
 			yh_period[2] = 0; //무궁화 3초 대기 타이머 초기화
 
 			gotoxy(N_ROW, 0); // 무궁화 출력을 깨끗이 비움 (더 좋은 방법이 생각나지 않음...)
@@ -168,8 +168,8 @@ void yh_no_watch(int yh_period[]) {
 void catch_move(int a) {
 	int al_chk_count = 0; //플레어어 모두 체크해야 결정할 수 있음.
 	for (int i = 0; i < n_player; i++) {
-		// if문의 마지막 조건 < 에서 자기자신은 걸러짐 (등호 없음)
-		if (player[i] == true && px[i] == px[a] && py[i] < py[a]) {
+		// if문의 조건 < 에서 자기자신은 걸러짐 (등호 없음)
+		if (player[i] == true && py[i] < py[a] && px[i] == px[a] ) {
 			//테스트 좌표 출력
 			gotoxy(N_ROW + 3, 0);
 			printf("pass 좌표는: %d %d | %d %d", px[i], py[i], px[a], px[a]);
@@ -178,7 +178,8 @@ void catch_move(int a) {
 		}
 		else {al_chk_count++;}
 
-		if (al_chk_count == n_player - 1) {
+		// 모두 체크를 완료했는데도 앞에 아무도 없다, 그럼 죽어야지
+		if (al_chk_count == n_player) {
 			//테스트 좌표 출력
 			gotoxy(N_ROW + 2, 0);
 			printf("kill 좌표는: %d %d | %d %d", px[i], py[i], px[a], px[a]);
