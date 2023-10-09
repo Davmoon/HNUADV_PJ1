@@ -187,15 +187,14 @@ void mugunghwa(void) {
 			break;
 		}
 		else if (key != K_UNDEFINED) {
-			move_manual(key);
-			if (len == 10 && player[0] == true && pass[0] == false) {
-				for (int j = 1; j < 8; j++) {
-					if (px[0] == px[j] && py[j] > py[0]) {
-						player[0] = false;
-						back_buf[px[0]][py[0]] = ' ';
-						n_alive--;
-					}
-				}
+			if (len <= 9) {
+				move_manual(key);
+			}
+			else if (len == 10 && pass[0] == false && player[0] == true) {
+				// 2번 catch 하여 3초 정지중 들어올 때, 나갈 때 모두 잡도록 인식
+				catch_move(0);
+				move_manual(key);
+				catch_move(0);
 			}
 		}
 
