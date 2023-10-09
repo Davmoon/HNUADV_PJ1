@@ -10,18 +10,18 @@
 
 void m_init(void);
 void yh_print(int, int, int, bool); //영희 생성 함수 x, y, 영희 블록 수, 뒤돌아봄 O(true), X(false)
-void move_m_random(int); // 백분율 부분 https://coding-factory.tistory.com/667 참조
+void mv_m_random(int); // 백분율 부분 https://coding-factory.tistory.com/667 참조
 void pass_zone(void);
 void yh_no_watch(int yh_period[]);
 void catch_move(int);
+void ten_mv();
 
 int px[PLAYER_MAX], py[PLAYER_MAX], period[PLAYER_MAX]; // 각 플레이어 위치, 이동 주기, 패스 여부
 int len = 0; //'무궁화꽃이 피었습니다' 출력된 길이 저장
-bool a = true;
 
 void m_init(void) {
 	map_init(11, 35);
-	yh_print(3, 1, 5, true);
+	//yh_print(3, 1, 5, true);
 
 	int x, y;
 	// 끝 자리에 살아남은 플레이어가 랜덤하게 배치되는 코드
@@ -33,7 +33,7 @@ void m_init(void) {
 			} while (!placable(x, y));
 			px[i] = x;
 			py[i] = y;
-			period[i] = randint(100, 150);
+			period[i] = 10;/*randint(100, 150)*/;
 
 			back_buf[px[i]][py[i]] = '0' + i;
 		}
@@ -52,7 +52,7 @@ void yh_print(int x, int y, int num, bool look) {
 	}
 }
 
-void move_m_random(int pnum) {
+void mv_m_random(int pnum) {
 	int nx, ny;
 	int percent[10] = { 0,0,0,0,0,0,0,1,2,3 }; // 70%, 10%, 10%, 10% 구현
 
@@ -102,7 +102,7 @@ void yh_no_watch(int yh_period[]) {
 	int pm_time = 40; // 느려지거나 빨라지기 위해 더하는 밀리sec
 
 	if (len <= 9) {
-		yh_print(3, 1, 5, false); // 영희 off
+		//yh_print(3, 1, 5, false); // 영희 off
 		gotoxy(N_ROW, len * 2); // 출력 장소로 이동
 
 		// 겹치는 코드 나중에 가능하면 수정
@@ -119,21 +119,20 @@ void yh_no_watch(int yh_period[]) {
 
 			if (len == 10) {
 				yh_period[2] = 0; //무궁화 출력 타이머 초기화
-				//catch_move1(0); // len 10일때도 한번만 실행됨(나이스!!!!!)
+				//ten_mv(); // len 10일때도 한번만 실행됨(나이스!!!!!)
 			}
 		}
 	}
 	else if (len == 10) {
-
-		yh_print(3, 1, 5, true);
+		//yh_print(3, 1, 5, true);
 		yh_period[2] += 10; // 무궁화 출력 이후 카운트 해야 하기 때문
 
 		// 대기시간 카운터 테스트 코드
-		gotoxy(N_ROW + 1, 0);
-		printf("%d 밀리초 대기", yh_period[2]);
+		//gotoxy(N_ROW + 1, 0);
+		//printf("%d 밀리초 대기", yh_period[2]);
 
 		if (yh_period[2] % 3000 == 0) {
-			yh_print(3, 1, 5, true); //영희 on
+			//yh_print(3, 1, 5, true); //영희 on
 			len = 0; //무궁화 한 페이즈 종료, 새로운 페이즈 시작 위해 초기화
 			yh_period[2] = 0; //무궁화 3초 대기 타이머 초기화
 
@@ -149,27 +148,22 @@ void yh_no_watch(int yh_period[]) {
 	}
 }
 
-//void catch_move1() {
-//
-//	//플레이어 1명이 10%확율로 죽는 코드 (while 문에 넣으면 10% * (3000 / 10)번 시도되어 불가)
-//	for (int i = 1; i < 8; i++) {
-//		if (player[i] == true) {
-//			for (int j = 1; j < 8; j++) {
-//				if (px[i] == px[j] && py[j] > py[i]) {
-//					player[i] = false;
-//					back_buf[px[i]][py[i]] = ' ';
-//					n_alive--;
-//				}
-//			}
-//		}
-//	}
-//}
+
+void ten_mv() {
+	for (int i = 1; i < n_player; i++) {
+		if (player[i] == true && randint(0, 9) == 9) {
+			catch_move(i);
+			mv_m_random(i);
+			catch_move(i);
+		}
+	}
+}
 
 void catch_move(int a) {
 	int al_chk_count = 0; //플레어어 모두 체크해야 결정할 수 있음.
 	for (int i = 0; i < n_player; i++) {
 		// if문의 조건 < 에서 자기자신은 걸러짐 (등호 없음)
-		if (player[i] == true && py[i] < py[a] && px[i] == px[a] ) {
+		if (player[i] == true && py[i] < py[a] && px[i] == px[a]) {
 			//테스트 좌표 출력
 			gotoxy(N_ROW + 3, 0);
 			printf("pass 좌표는: %d %d | %d %d", px[i], py[i], px[a], px[a]);
@@ -225,13 +219,16 @@ void mugunghwa(void) {
 		for (int i = 1; i < n_player; i++) {
 			if (yh_period[2] % period[i] == 0) {
 				if (len <= 9) {
-					move_m_random(i);
+					mv_m_random(i);
 				}
 			}
 		}
-
-		display();
+		
 		pass_zone();
+		display();
+		if (player[0] == true) {
+			printf(" 0 죽었음");
+		}
 		Sleep(10);
 		//tick += 10; // (시스템 시간) 여기선 미사용
 		yh_period[2] += 10; // 무궁화 전용 타이머
