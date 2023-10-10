@@ -64,7 +64,7 @@ void ending() {
         printf("살아 남은 플레이어:\n");
         for (int i = 0; i < n_player; i++) {
             if (player[i]) {
-            printf("플레이어 %d\n", i + 1);
+            printf("플레이어 %d\n", i);
             }
         }
         exit(0);
