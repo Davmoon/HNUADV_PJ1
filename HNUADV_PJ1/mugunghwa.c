@@ -10,7 +10,7 @@
 
 void m_init(void);
 void yh_print(int, int, int, bool); //영희 생성 함수 x, y, 영희 블록 수, 뒤돌아봄 O(true), X(false)
-void mv_m_random(int); // 백분율 부분 https://coding-factory.tistory.com/667 참조
+bool mv_m_random(int); // 백분율 부분 https://coding-factory.tistory.com/667 참조
 void pass_zone(void);
 void yh_no_watch(int yh_period[], int die[]);
 void mv_ten();
@@ -54,7 +54,7 @@ void yh_print(int x, int y, int num, bool look) {
 	}
 }
 
-void mv_m_random(int pnum) {
+bool mv_m_random(int pnum) {
 	int nx, ny;
 	int percent[10] = { 0,0,0,0,0,0,0,1,2,3 }; // 70%, 10%, 10%, 10% 구현
 	int mv_stay = 0; // 제자리에 있는 경우 카운터
@@ -85,6 +85,7 @@ void mv_m_random(int pnum) {
 	if (mv_stay == 1) {
 		back_buf[px[pnum]][py[pnum]] = '0' + pnum;
 		front_buf[px[pnum]][py[pnum]] = ' ';
+		return true;
 	}
 	else {
 		move_tail(pnum, nx, ny);
@@ -165,8 +166,13 @@ void yh_no_watch(int yh_period[], int die[]) {
 void mv_ten() {
 	for (int i = 1; i < n_player; i++) {
 		if (player[i] == true && pass[i] == false && randint(1, 9) == 9) {
-			mv_m_random(i);
-			catch_move(i);
+			if (mv_m_random(i) == true) {
+
+			}
+			else {
+				catch_move(i);//여기에 추가 수정할 것.
+			}
+			
 			//player[i] = false; //0번만 뒤에 숨고 안죽으면 된다면 이 코드를 사용.
 			//back_buf[px[i]][py[i]] = ' ';
 		}
