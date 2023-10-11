@@ -52,7 +52,7 @@ void ending() {
     if (alive_count == 1) {
         system("cls");
         printf("게임이 종료됩니다. 단 한 명만 남았습니다.\n");
-        printf("승자: 플레이어 %d\n", last_alive_player + 1);
+        printf("승자: 플레이어 %d\n", last_alive_player);
         exit(0);
     }
 

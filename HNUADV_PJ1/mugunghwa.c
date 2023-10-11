@@ -13,8 +13,9 @@ void yh_print(int, int, int, bool); //영희 생성 함수 x, y, 영희 블록 수, 뒤돌아�
 void mv_m_random(int); // 백분율 부분 https://coding-factory.tistory.com/667 참조
 void pass_zone(void);
 void yh_no_watch(int yh_period[], int die[]);
+void mv_ten();
 void catch_move(int);
-void ten_mv();
+
 
 int px[PLAYER_MAX], py[PLAYER_MAX], period[PLAYER_MAX]; // 각 플레이어 위치, 이동 주기, 패스 여부
 int len = 0; //'무궁화꽃이 피었습니다' 출력된 길이 저장
@@ -56,6 +57,7 @@ void yh_print(int x, int y, int num, bool look) {
 void mv_m_random(int pnum) {
 	int nx, ny;
 	int percent[10] = { 0,0,0,0,0,0,0,1,2,3 }; // 70%, 10%, 10%, 10% 구현
+	int mv_stay = 0; // 제자리에 있는 경우 카운터
 
 	static int dx[4] = { -1, 1, 0, 0 };
 	static int dy[4] = { 0, 0, -1, 1 };
@@ -73,11 +75,20 @@ void mv_m_random(int pnum) {
 				break; //아래쪽으로
 			case 3:
 				nx = px[pnum]; ny = py[pnum];
+				front_buf[px[pnum]][py[pnum]] = ' ';
+				back_buf[px[pnum]][py[pnum]] = ' ';
+				mv_stay++;
 				break; //제자리에
 		}
 	} while (!placable(nx, ny));
 
-	move_tail(pnum, nx, ny);
+	if (mv_stay == 1) {
+		back_buf[px[pnum]][py[pnum]] = '0' + pnum;
+		front_buf[px[pnum]][py[pnum]] = ' ';
+	}
+	else {
+		move_tail(pnum, nx, ny);
+	}
 }
 
 void pass_zone(void) {
@@ -120,7 +131,7 @@ void yh_no_watch(int yh_period[], int die[]) {
 
 			if (len == 10) {
 				yh_period[2] = 0; //무궁화 출력 타이머 초기화
-				ten_mv(); // len 10일때도 한번만 실행됨(나이스!!!!!)
+				mv_ten(); // len 10일때도 한번만 실행됨(나이스!!!!!)
 			}
 		}
 	}
@@ -151,10 +162,9 @@ void yh_no_watch(int yh_period[], int die[]) {
 	}
 }
 
-void ten_mv() {
+void mv_ten() {
 	for (int i = 1; i < n_player; i++) {
 		if (player[i] == true && pass[i] == false && randint(1, 9) == 9) {
-			catch_move(i);
 			mv_m_random(i);
 			catch_move(i);
 			//player[i] = false; //0번만 뒤에 숨고 안죽으면 된다면 이 코드를 사용.
@@ -183,8 +193,8 @@ void catch_move(int a) {
 			gotoxy(N_ROW + 2, 0);
 			printf("%d kill 좌표는: %d %d | %d %d", a, px[i], py[i], px[a], py[a]);
 
-			player[a] = false;
 			back_buf[px[a]][py[a]] = ' ';
+			player[a] = false;
 			n_alive--;
 		}
 	}
@@ -218,8 +228,7 @@ void mugunghwa(void) {
 					move_manual(key);
 				}
 				else if (len == 10) {
-					// 2번 catch 하여 3초 정지중 들어올 때, 나갈 때 모두 잡도록 인식
-					catch_move(0);
+
 					move_manual(key);
 					catch_move(0);
 				}
@@ -228,6 +237,7 @@ void mugunghwa(void) {
 
 		for (int i = 1; i < n_player; i++) {
 			if (tick % period[i] == 0 && player[i] == true && pass[i] == false) {
+				// 10인 경우, yh_no_watch 안의 ten_mv에서 작동(10% 중복 작동 방지 위해)
 				if (len <= 9) {
 					mv_m_random(i);
 				}
