@@ -82,6 +82,7 @@ bool mv_m_random(int pnum) {
 		}
 	} while (!placable(nx, ny));
 
+	// mv_stay가 1일때 
 	if (mv_stay == 1) {
 		back_buf[px[pnum]][py[pnum]] = '0' + pnum;
 		front_buf[px[pnum]][py[pnum]] = ' ';
@@ -89,6 +90,7 @@ bool mv_m_random(int pnum) {
 	}
 	else {
 		move_tail(pnum, nx, ny);
+		return false; // 굳이 없어도 될듯? 오류방지를 위해 추가
 	}
 }
 
@@ -97,6 +99,7 @@ void pass_zone(void) {
 	for (int i = 0; i < n_player; i++) {
 		//pass 처리와 false 처리가 운좋게 동시에 처리되는 상황 방지
 		if (player[i] == true) {
+
 			if ((px[i] == 3 && py[i] == 1) ||
 				(px[i] == 4 && py[i] == 2) ||
 				(px[i] == 5 && py[i] == 2) ||
@@ -166,14 +169,13 @@ void yh_no_watch(int yh_period[], int die[]) {
 void mv_ten() {
 	for (int i = 1; i < n_player; i++) {
 		if (player[i] == true && pass[i] == false && randint(1, 9) == 9) {
-			if (mv_m_random(i) == true) {
-
+			if (mv_m_random(i)) {
+			
 			}
 			else {
 				catch_move(i);//여기에 추가 수정할 것.
 			}
-			
-			//player[i] = false; //0번만 뒤에 숨고 안죽으면 된다면 이 코드를 사용.
+			//player[i] = false; //10% 확률로 죽기만 하면 된다면 이 코드를 사용.
 			//back_buf[px[i]][py[i]] = ' ';
 		}
 	}
@@ -213,7 +215,7 @@ void mugunghwa(void) {
 
 	//dialog(msg);
 	int yh_period[] = { 250, 250, 0 }; // 무궁화 꽃 t, 피었습니다 t, 무궁화 전용 타이머(tick에 따르면 오차생김)
-	int die[] = {0};
+	int die[] = {0}; //dialog() 죽은 출력용.
 
 	while (1) {
 
@@ -234,7 +236,6 @@ void mugunghwa(void) {
 					move_manual(key);
 				}
 				else if (len == 10) {
-
 					move_manual(key);
 					catch_move(0);
 				}
@@ -261,7 +262,6 @@ void mugunghwa(void) {
 				gotoxy(N_ROW + 15, i * 13);
 				printf("|%d죽음(%d,%d)|", i, px[i], py[i]);
 			}
-
 		}
 		Sleep(10);
 		tick += 10; // (시스템 시간) 여기선 미사용
