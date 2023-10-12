@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS //sprintf() 사용하기 위함 없으면 사이즈 지정해줘야함..
 #include "jjuggumi.h"
 #include "canvas.h"
 #include "keyin.h"
@@ -13,9 +13,9 @@ void m_init(void);
 void yh_print(int, int, int, bool); //영희 생성 함수 x, y, 영희 블록 수, 뒤돌아봄 O(true), X(false)
 bool mv_m_random(int); // 백분율 부분 https://coding-factory.tistory.com/667 참조
 void pass_zone(void);
-void yh_no_watch(int yh_period[], int die[]);
+void yh_no_watch(int yh_period[]);
 void mv_ten();
-void catch_move(int);
+bool catch_mv(int, bool);
 
 
 int px[PLAYER_MAX], py[PLAYER_MAX], period[PLAYER_MAX]; // 각 플레이어 위치, 이동 주기, 패스 여부
@@ -25,6 +25,7 @@ char msg1[50] = { "player",}; //dialog() 메세지 저장 sprintf https://jhnyang.tis
 void m_init(void) {
 	map_init(11, 35);
 	yh_print(4, 1, 3, true);
+	// 주기가 각자 다르고 tick % period[i]가 정확히 떨어지지 않을 수 있으므로 (Lee 조언 감사)
 	int period_set[] = { 250, 260, 270, 280, 290, 300, 310, 320, 330 };
 
 	int x, y;
@@ -77,7 +78,7 @@ bool mv_m_random(int pnum) {
 				break; //아래쪽으로
 			case 3:
 				nx = px[pnum]; ny = py[pnum];
-				back_buf[px[pnum]][py[pnum]] = ' ';
+				back_buf[px[pnum]][py[pnum]] = ' ';//placable 우회 위해 빈칸으로 설정
 				mv_stay++;
 				break; //제자리에
 		}
@@ -85,8 +86,8 @@ bool mv_m_random(int pnum) {
 
 	// mv_stay가 1일때 
 	if (mv_stay == 1) {
-		back_buf[px[pnum]][py[pnum]] = '0' + pnum;
-		return true;
+		back_buf[px[pnum]][py[pnum]] = '0' + pnum; //placable 우회 작업 복구
+		return true;// 제자리인 경우 전달 위해 bool 사용.
 	}
 	else {
 		move_tail(pnum, nx, ny);
@@ -95,7 +96,7 @@ bool mv_m_random(int pnum) {
 }
 
 void pass_zone(void) {
-	//9명인 경우에 맞추어 yh 5개로 수정
+	//yh 3개이므로 인식부분이 5개(변경가능)
 	for (int i = 0; i < n_player; i++) {
 		//pass 처리와 false 처리가 운좋게 동시에 처리되는 상황 방지
 		if (player[i] == true) {
@@ -113,7 +114,7 @@ void pass_zone(void) {
 	}
 }
 
-void yh_no_watch(int yh_period[], int die[]) {
+void yh_no_watch(int yh_period[]) {
 	char sent[] = "무궁화꽃이피었습니다";
 	int pm_time = 30; // 느려지거나 빨라지기 위해 더하는 밀리sec
 
@@ -121,7 +122,7 @@ void yh_no_watch(int yh_period[], int die[]) {
 		yh_print(4, 1, 3, false); // 영희 off
 		gotoxy(N_ROW, len * 2); // 출력 장소로 이동
 
-		// 겹치는 코드 나중에 가능하면 수정
+		// '무궁화꽃이' 출력
 		if (len <= 4 && yh_period[2] % yh_period[0] == 0) {
 			printf("%c%c", sent[len * 2], sent[len * 2 + 1]); //한글은 2bit, 따라서 %c%c 사용
 			len += 1;
@@ -129,19 +130,20 @@ void yh_no_watch(int yh_period[], int die[]) {
 				yh_period[2] = 0; //무궁화 출력 타이머 초기화
 			}
 		}
+		// '피었습니다' 출력
 		else if (len >= 5 && yh_period[2] % yh_period[1] == 0) {
 			printf("%c%c", sent[len * 2], sent[len * 2 + 1]); //한글은 2bit, 따라서 %c%c 사용
 			len += 1;
 
 			if (len == 10) {
 				yh_period[2] = 0; //무궁화 출력 타이머 초기화
-				mv_ten(); // len 10일때도 한번만 실행됨(나이스!!!!!)
+				mv_ten(); // len 10일때도 한번만 실행됨(나이스!!!, 3일 날림)
 			}
 		}
 	}
 	else if (len == 10) {
 		yh_print(4, 1, 3, true);
-		yh_period[2] += 10; // 무궁화 출력 이후 카운트 해야 하기 때문
+		yh_period[2] += 10; // 무궁화 출력 이후 3초 카운트 해야 하기 때문
 
 		// 대기시간 카운터 테스트 코드
 		gotoxy(N_ROW + 1, 0);
@@ -155,12 +157,13 @@ void yh_no_watch(int yh_period[], int die[]) {
 			gotoxy(N_ROW, 0); // 무궁화 출력을 깨끗이 비움 (더 좋은 방법이 생각나지 않음...)
 			printf("                    "); // 2bit이므로 20칸
 
+			// 한명도 안죽었으면 dialog() 대기시간 스킵
 			if (msg1[6] != '\0') {
 				sprintf(msg1, "%s %s", msg1, "dead!");
 				dialog(msg1);
 			}
 
-			msg1[6] = '\0';
+			msg1[6] = '\0';//player 외 초기화
 
 			// pm_time을 빼서 음수가 되지 않도록 하기 위함.
 			if (yh_period[1] > pm_time) {
@@ -174,11 +177,9 @@ void yh_no_watch(int yh_period[], int die[]) {
 void mv_ten() {
 	for (int i = 1; i < n_player; i++) {
 		if (player[i] == true && pass[i] == false && randint(0, 9) == 9) {
-			if (mv_m_random(i)) {
-			
-			}
-			else {
-				catch_move(i);//여기에 추가 수정할 것.
+			// catch_mv를 돌리고 제자리인지 확인, 아니면 이동한 자리에서 다시 가려졌는지 검사함. (머리 빡세게 굴렸다...)
+			if (!catch_mv(i, true)) {
+				catch_mv(i, false);
 			}
 			//player[i] = false; //10% 확률로 죽기만 하면 된다면 이 코드를 사용.
 			//back_buf[px[i]][py[i]] = ' ';
@@ -186,42 +187,74 @@ void mv_ten() {
 	}
 }
 
-void catch_move(int a) {
+bool catch_mv(int pnum, bool count) {
 	int al_chk_count = 0; //플레어어 모두 체크해야 결정할 수 있음.
 	for (int i = 0; i < n_player; i++) {
 
 		// if문의 조건 < 에서 자기자신은 걸러짐 (등호 없음)
-		if (player[i] == true && pass[i] == false && py[i] < py[a] && px[i] == px[a]) {
+		if (player[i] == true && pass[i] == false && py[i] < py[pnum] && px[i] == px[pnum]) {
 			//테스트 좌표 출력
 			gotoxy(N_ROW + 3, 0);
-			printf("%d pass 좌표는: %d %d | %d %d", a, px[i], py[i], px[a], py[a]);
+			printf("%d pass 좌표는: %d %d | %d %d", pnum, px[i], py[i], px[pnum], py[pnum]);
 
 			break;
 		}
 		else { al_chk_count++; }
 
-		// 모두 체크를 완료했는데도 앞에 아무도없으면 죽이기
-		if (player[a] == true && pass [a] == false && al_chk_count == n_player) {
+		if (player[pnum] == true && pass[pnum] == false && al_chk_count == n_player) {
+			// 제자리에 있는 경우 잡지 않기. true인 경우 한번은 돌리고 제자리인 경우 catch_mv 다시 안돌리도록
+			if (count == true && mv_m_random(i) == true) {
+				return true;
+			}
 			//테스트 좌표 출력
 			gotoxy(N_ROW + 2, 0);
-			printf("%d kill 좌표는: %d %d | %d %d", a, px[i], py[i], px[a], py[a]);
+			printf("%d kill 좌표는: %d %d | %d %d", pnum, px[i], py[i], px[pnum], py[pnum]);
 
-			sprintf(msg1, "%s %d", msg1, a);
-			back_buf[px[a]][py[a]] = ' ';
-			player[a] = false;
+			sprintf(msg1, "%s %d", msg1, pnum); //kill 플레이어 저장
+			back_buf[px[pnum]][py[pnum]] = ' ';
+			player[pnum] = false;
 			n_alive--;
+			return false; //오류 방지 위해 설정
 		}
 	}
 }
+
+//기존 함수 백업
+//void catch_move(int a) {
+//	int al_chk_count = 0; //플레어어 모두 체크해야 결정할 수 있음.
+//	for (int i = 0; i < n_player; i++) {
+//
+//		// if문의 조건 < 에서 자기자신은 걸러짐 (등호 없음)
+//		if (player[i] == true && pass[i] == false && py[i] < py[a] && px[i] == px[a]) {
+//			//테스트 좌표 출력
+//			gotoxy(N_ROW + 3, 0);
+//			printf("%d pass 좌표는: %d %d | %d %d", a, px[i], py[i], px[a], py[a]);
+//
+//			break;
+//		}
+//		else { al_chk_count++; }
+//
+//		// 모두 체크를 완료했는데도 앞에 아무도없으면 죽이기
+//		if (player[a] == true && pass [a] == false && al_chk_count == n_player) {
+//			//테스트 좌표 출력
+//			gotoxy(N_ROW + 2, 0);
+//			printf("%d kill 좌표는: %d %d | %d %d", a, px[i], py[i], px[a], py[a]);
+//
+//			sprintf(msg1, "%s %d", msg1, a);
+//			back_buf[px[a]][py[a]] = ' ';
+//			player[a] = false;
+//			n_alive--;
+//		}
+//	}
+//}
 
 void mugunghwa(void) {
 	m_init();
 	system("cls");
 	display();
 
-	//dialog("무궁화 꽃이 피었습니다");
+	dialog("무궁화 꽃이 피었습니다");
 	int yh_period[] = { 250, 250, 0 }; // 무궁화 꽃 t, 피었습니다 t, 무궁화 전용 타이머(tick에 따르면 오차생김)
-	int die[] = {0}; //dialog() 죽은 출력용.
 
 	while (1) {
 
@@ -229,7 +262,7 @@ void mugunghwa(void) {
 			break;
 		}
 
-		yh_no_watch(yh_period, die);
+		yh_no_watch(yh_period);
 		
 		key_t key = get_key();
 		if (key == K_QUIT) {
@@ -242,9 +275,9 @@ void mugunghwa(void) {
 					move_manual(key);
 				}
 				else if (len == 10) {
-					//catch_move(0);
+					catch_mv(0, false);
 					move_manual(key);
-					catch_move(0);
+					catch_mv(0, false);
 				}
 			}
 		}
@@ -260,6 +293,7 @@ void mugunghwa(void) {
 		
 		pass_zone();
 		display();
+		// pass, kill 확인을 위한 테스트 코드
 		for (int i = 0; i < n_player; i++) {
 			if (pass[i] == true) {
 				gotoxy(N_ROW + 14, i*13);
@@ -271,7 +305,7 @@ void mugunghwa(void) {
 			}
 		}
 		Sleep(10);
-		tick += 10; // (시스템 시간) 여기선 미사용
+		tick += 10; // 시스템 시간 (period[i]에서만 사용)
 		yh_period[2] += 10; // 무궁화 전용 타이머
 	}
 }
