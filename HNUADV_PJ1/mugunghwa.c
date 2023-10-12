@@ -219,35 +219,6 @@ bool catch_mv(int pnum, bool count) {
 	}
 }
 
-//기존 함수 백업
-//void catch_move(int a) {
-//	int al_chk_count = 0; //플레어어 모두 체크해야 결정할 수 있음.
-//	for (int i = 0; i < n_player; i++) {
-//
-//		// if문의 조건 < 에서 자기자신은 걸러짐 (등호 없음)
-//		if (player[i] == true && pass[i] == false && py[i] < py[a] && px[i] == px[a]) {
-//			//테스트 좌표 출력
-//			gotoxy(N_ROW + 3, 0);
-//			printf("%d pass 좌표는: %d %d | %d %d", a, px[i], py[i], px[a], py[a]);
-//
-//			break;
-//		}
-//		else { al_chk_count++; }
-//
-//		// 모두 체크를 완료했는데도 앞에 아무도없으면 죽이기
-//		if (player[a] == true && pass [a] == false && al_chk_count == n_player) {
-//			//테스트 좌표 출력
-//			gotoxy(N_ROW + 2, 0);
-//			printf("%d kill 좌표는: %d %d | %d %d", a, px[i], py[i], px[a], py[a]);
-//
-//			sprintf(msg1, "%s %d", msg1, a);
-//			back_buf[px[a]][py[a]] = ' ';
-//			player[a] = false;
-//			n_alive--;
-//		}
-//	}
-//}
-
 void mugunghwa(void) {
 	m_init();
 	system("cls");
