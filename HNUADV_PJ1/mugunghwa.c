@@ -20,7 +20,7 @@ void catch_move(int);
 
 int px[PLAYER_MAX], py[PLAYER_MAX], period[PLAYER_MAX]; // 각 플레이어 위치, 이동 주기, 패스 여부
 int len = 0; //'무궁화꽃이 피었습니다' 출력된 길이 저장
-char msg1[50] = { "player",};
+char msg1[50] = { "player",}; //dialog() 메세지 저장 sprintf https://jhnyang.tistory.com/314 참조
 
 void m_init(void) {
 	map_init(11, 35);
@@ -206,7 +206,7 @@ void catch_move(int a) {
 			gotoxy(N_ROW + 2, 0);
 			printf("%d kill 좌표는: %d %d | %d %d", a, px[i], py[i], px[a], py[a]);
 
-			sprintf(msg1, "%s %d ", msg1, a);
+			sprintf(msg1, "%s %d", msg1, a);
 			back_buf[px[a]][py[a]] = ' ';
 			player[a] = false;
 			n_alive--;
@@ -219,7 +219,7 @@ void mugunghwa(void) {
 	system("cls");
 	display();
 
-	//dialog(msg1);
+	//dialog("무궁화 꽃이 피었습니다");
 	int yh_period[] = { 250, 250, 0 }; // 무궁화 꽃 t, 피었습니다 t, 무궁화 전용 타이머(tick에 따르면 오차생김)
 	int die[] = {0}; //dialog() 죽은 출력용.
 

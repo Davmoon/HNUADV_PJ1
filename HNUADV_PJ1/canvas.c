@@ -101,7 +101,7 @@ void dialog(char message[]) {
 
 	int y = 2; // message 출력 아래쪽으로 몇칸인지 지정
 	int sec_x = 4; // sec초 출력 옆으로 몇칸인지 지정
-	int mes_x = 8; // message 출력 옆으로 몇칸인지 지정
+	int mes_x = 6; // message 출력 옆으로 몇칸인지 지정
 
 	gotoxy(Rmid + y, mes_x); // message 출력
 	printf("%s", message);
