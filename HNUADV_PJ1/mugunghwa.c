@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "jjuggumi.h"
 #include "canvas.h"
 #include "keyin.h"
@@ -19,6 +20,7 @@ void catch_move(int);
 
 int px[PLAYER_MAX], py[PLAYER_MAX], period[PLAYER_MAX]; // 각 플레이어 위치, 이동 주기, 패스 여부
 int len = 0; //'무궁화꽃이 피었습니다' 출력된 길이 저장
+char msg1[50] = { "player",};
 
 void m_init(void) {
 	map_init(11, 35);
@@ -75,7 +77,6 @@ bool mv_m_random(int pnum) {
 				break; //아래쪽으로
 			case 3:
 				nx = px[pnum]; ny = py[pnum];
-				front_buf[px[pnum]][py[pnum]] = ' ';
 				back_buf[px[pnum]][py[pnum]] = ' ';
 				mv_stay++;
 				break; //제자리에
@@ -85,7 +86,6 @@ bool mv_m_random(int pnum) {
 	// mv_stay가 1일때 
 	if (mv_stay == 1) {
 		back_buf[px[pnum]][py[pnum]] = '0' + pnum;
-		front_buf[px[pnum]][py[pnum]] = ' ';
 		return true;
 	}
 	else {
@@ -155,7 +155,12 @@ void yh_no_watch(int yh_period[], int die[]) {
 			gotoxy(N_ROW, 0); // 무궁화 출력을 깨끗이 비움 (더 좋은 방법이 생각나지 않음...)
 			printf("                    "); // 2bit이므로 20칸
 
-			die[0] = '\0';
+			if (msg1[6] != '\0') {
+				sprintf(msg1, "%s %s", msg1, "dead!");
+				dialog(msg1);
+			}
+
+			msg1[6] = '\0';
 
 			// pm_time을 빼서 음수가 되지 않도록 하기 위함.
 			if (yh_period[1] > pm_time) {
@@ -168,7 +173,7 @@ void yh_no_watch(int yh_period[], int die[]) {
 
 void mv_ten() {
 	for (int i = 1; i < n_player; i++) {
-		if (player[i] == true && pass[i] == false && randint(1, 9) == 9) {
+		if (player[i] == true && pass[i] == false && randint(0, 9) == 9) {
 			if (mv_m_random(i)) {
 			
 			}
@@ -201,6 +206,7 @@ void catch_move(int a) {
 			gotoxy(N_ROW + 2, 0);
 			printf("%d kill 좌표는: %d %d | %d %d", a, px[i], py[i], px[a], py[a]);
 
+			sprintf(msg1, "%s %d ", msg1, a);
 			back_buf[px[a]][py[a]] = ' ';
 			player[a] = false;
 			n_alive--;
@@ -213,7 +219,7 @@ void mugunghwa(void) {
 	system("cls");
 	display();
 
-	//dialog(msg);
+	//dialog(msg1);
 	int yh_period[] = { 250, 250, 0 }; // 무궁화 꽃 t, 피었습니다 t, 무궁화 전용 타이머(tick에 따르면 오차생김)
 	int die[] = {0}; //dialog() 죽은 출력용.
 
@@ -236,6 +242,7 @@ void mugunghwa(void) {
 					move_manual(key);
 				}
 				else if (len == 10) {
+					//catch_move(0);
 					move_manual(key);
 					catch_move(0);
 				}
