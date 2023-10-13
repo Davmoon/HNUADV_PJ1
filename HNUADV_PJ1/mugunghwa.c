@@ -15,12 +15,13 @@ bool mv_m_random(int); // 백분율 부분 https://coding-factory.tistory.com/667 참�
 void pass_zone(void);
 void yh_no_watch(int yh_period[]);
 void mv_ten();
-bool catch_mv(int, bool);
+bool catch_mv(int, bool, key_t key);
 
 
 int px[PLAYER_MAX], py[PLAYER_MAX], period[PLAYER_MAX]; // 각 플레이어 위치, 이동 주기, 패스 여부
 int len = 0; //'무궁화꽃이 피었습니다' 출력된 길이 저장
 char msg1[50] = { "player",}; //dialog() 메세지 저장 sprintf https://jhnyang.tistory.com/314 참조
+int mv = 9;
 
 void m_init(void) {
 	map_init(11, 35);
@@ -69,12 +70,15 @@ bool mv_m_random(int pnum) {
 		switch (percent[randint(0, 9)]) {
 			case 0:
 				nx = px[pnum] + dx[2]; ny = py[pnum] + dy[2];
+				mv = 0;
 				break; //왼쪽으로
 			case 1:
 				nx = px[pnum] + dx[0]; ny = py[pnum] + dy[0];
+				mv = 1;
 				break; //위쪽으로
 			case 2:
 				nx = px[pnum] + dx[1]; ny = py[pnum] + dy[1];
+				mv = 2;
 				break; //아래쪽으로
 			case 3:
 				nx = px[pnum]; ny = py[pnum];
@@ -178,8 +182,8 @@ void mv_ten() {
 	for (int i = 1; i < n_player; i++) {
 		if (player[i] == true && pass[i] == false && randint(0, 9) == 9) {
 			// catch_mv를 돌리고 제자리인지 확인, 아니면 이동한 자리에서 다시 가려졌는지 검사함. (머리 빡세게 굴렸다...)
-			if (!catch_mv(i, true)) {
-				catch_mv(i, false);
+			if (!catch_mv(i, true, '\0')) {
+				catch_mv(i, false, '\0');
 			}
 			//player[i] = false; //10% 확률로 죽기만 하면 된다면 이 코드를 사용.
 			//back_buf[px[i]][py[i]] = ' ';
@@ -187,21 +191,32 @@ void mv_ten() {
 	}
 }
 
-bool catch_mv(int pnum, bool count) {
+bool catch_mv(int pnum, bool count, key_t key) {
 	int al_chk_count = 0; //플레어어 모두 체크해야 결정할 수 있음.
 	for (int i = 0; i < n_player; i++) {
 
 		// if문의 조건 < 에서 자기자신은 걸러짐 (등호 없음)
 		if (player[i] == true && pass[i] == false && py[i] < py[pnum] && px[i] == px[pnum]) {
+
 			//테스트 좌표 출력
 			gotoxy(N_ROW + 3, 0);
 			printf("%d pass 좌표는: %d %d | %d %d", pnum, px[i], py[i], px[pnum], py[pnum]);
 
+			// 0번 앞에 뭔가 있으면 움직일 수 있도록 하는 코드
+			if (pnum == 0 && count == true) {
+				move_manual(key);
+				return true;
+			}
 			break;
 		}
 		else { al_chk_count++; }
 
 		if (player[pnum] == true && pass[pnum] == false && al_chk_count == n_player) {
+			// 움직인 공간에 다른 플레이어가 존재해 움직이지 못하고 가만히 있는 상태일때
+			if (pnum == 0 && count == true && move_manual(key) == false) {
+				move_manual(key);
+				return false;
+			}
 			// 제자리에 있는 경우 잡지 않기. true인 경우 한번은 돌리고 제자리인 경우 catch_mv 다시 안돌리도록
 			if (count == true && mv_m_random(i) == true) {
 				return true;
@@ -224,7 +239,7 @@ void mugunghwa(void) {
 	system("cls");
 	display();
 
-	dialog("무궁화 꽃이 피었습니다");
+	//dialog("무궁화 꽃이 피었습니다");
 	int yh_period[] = { 250, 250, 0 }; // 무궁화 꽃 t, 피었습니다 t, 무궁화 전용 타이머(tick에 따르면 오차생김)
 
 	while (1) {
@@ -246,9 +261,10 @@ void mugunghwa(void) {
 					move_manual(key);
 				}
 				else if (len == 10) {
-					catch_mv(0, false);
-					move_manual(key);
-					catch_mv(0, false);
+					if (catch_mv(0, true, key) == true) {
+						catch_mv(0, false, '\0');
+					}
+					
 				}
 			}
 		}

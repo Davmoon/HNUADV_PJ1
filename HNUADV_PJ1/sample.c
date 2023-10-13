@@ -9,7 +9,7 @@
 #define DIR_RIGHT	3
 
 void sample_init(void);
-void move_manual(key_t key);
+bool move_manual(key_t key);
 void move_random(int i, int dir);
 void move_tail(int i, int nx, int ny);
 
@@ -35,7 +35,7 @@ void sample_init(void) {
 	tick = 0;
 }
 
-void move_manual(key_t key) {
+bool move_manual(key_t key) {
 	// 각 방향으로 움직일 때 x, y값 delta
 	static int dx[4] = { -1, 1, 0, 0 };
 	static int dy[4] = { 0, 0, -1, 1 };
@@ -54,10 +54,11 @@ void move_manual(key_t key) {
 	nx = px[0] + dx[dir];
 	ny = py[0] + dy[dir];
 	if (!placable(nx, ny)) {
-		return;
+		return false;
 	}
 
 	move_tail(0, nx, ny);
+	return true;
 }
 
 // 0 <= dir < 4가 아니면 랜덤
