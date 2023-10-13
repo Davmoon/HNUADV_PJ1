@@ -17,11 +17,9 @@ void yh_no_watch(int yh_period[]);
 void mv_ten();
 bool catch_mv(int, bool, key_t key);
 
-
 int px[PLAYER_MAX], py[PLAYER_MAX], period[PLAYER_MAX]; // 각 플레이어 위치, 이동 주기, 패스 여부
 int len = 0; //'무궁화꽃이 피었습니다' 출력된 길이 저장
 char msg1[50] = { "player",}; //dialog() 메세지 저장 sprintf https://jhnyang.tistory.com/314 참조
-int mv = 9;
 
 void m_init(void) {
 	map_init(11, 35);
@@ -70,15 +68,12 @@ bool mv_m_random(int pnum) {
 		switch (percent[randint(0, 9)]) {
 			case 0:
 				nx = px[pnum] + dx[2]; ny = py[pnum] + dy[2];
-				mv = 0;
 				break; //왼쪽으로
 			case 1:
 				nx = px[pnum] + dx[0]; ny = py[pnum] + dy[0];
-				mv = 1;
 				break; //위쪽으로
 			case 2:
 				nx = px[pnum] + dx[1]; ny = py[pnum] + dy[1];
-				mv = 2;
 				break; //아래쪽으로
 			case 3:
 				nx = px[pnum]; ny = py[pnum];
