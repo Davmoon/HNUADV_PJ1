@@ -24,10 +24,13 @@
     <ClCompile Include="sample.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="mugunghwa.c">
+    <ClCompile Include="keyin.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="keyin.c">
+    <ClCompile Include="jebi.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="mugunghwa.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

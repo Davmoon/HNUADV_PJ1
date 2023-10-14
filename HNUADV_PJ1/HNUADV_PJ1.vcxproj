@@ -20,9 +20,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="canvas.c" />
+    <ClCompile Include="jebi.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="jjuggumi.c" />
     <ClCompile Include="keyin.c" />
-    <ClCompile Include="mugunghwa.c" />
+    <ClCompile Include="mugunghwa.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="sample.c" />
   </ItemGroup>
   <ItemGroup>

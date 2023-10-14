@@ -13,7 +13,7 @@ bool is_valid(key_t key) {
 		K_QUIT
 	};
 
-	for (int i = 0; i < N_KEY; i++) {
+	for (int i = 0; i < N_KEY; i++) { // UNDEFINED 포함 6개 키
 		if (key_list[i] == key) {
 			return true;
 		}
