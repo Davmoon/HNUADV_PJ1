@@ -36,8 +36,26 @@ int jjuggumi_init(void) {
 }
 
 void intro() {
+    printf("   _    _                                         _ \n");
+    printf("  (_)  (_)                                       (_)\n");
+    Sleep(200);
+    printf("   _    _  _   _   __ _   __ _  _   _  _ __ ___   _ \n");
+    Sleep(200);
+    printf("  | |  | || | | | / _` | / _` || | | || '_ ` _ \\ | |\n");
+    Sleep(200);
+    printf("  | |  | || |_| || (_| || (_| || |_| || | | | | || |\n");
+    Sleep(200);
+    printf("  | |  | | \\__,_| \\__, | \\__, | \\__,_||_| |_| |_||_|\n");
+    Sleep(200);
+    printf(" _/ | _/ |         __/ |  __/ |                     \n");
+    Sleep(200);
+    printf("|__/ |__/         |___/  |___/                      \n");
+    Sleep(200);
 
+    Sleep(1000);
+    system("cls");
 }
+
 void ending() {
     // 1명만 남은 경우: 즉시 엔딩으로 넘어가서 쭈꾸미 게임을 종료
     int alive_count = 0;
@@ -74,9 +92,9 @@ void ending() {
 
 
 int main(void) {
+    intro();
+    //sample();
 	jjuggumi_init();//인원 입력 함수
-	//sample();
-	//intro();
 	mugunghwa();
 	//nightgame();
 	//juldarigi();

@@ -175,7 +175,7 @@ void yh_no_watch(int yh_period[]) {
 
 void mv_ten() {
 	for (int i = 1; i < n_player; i++) {
-		if (player[i] == true && pass[i] == false && randint(0, 9) == 9) {
+		if (player[i] == true && pass[i] == false && randint(0, 9) == 1) {
 			// catch_mv를 돌리고 제자리인지 확인, 아니면 이동한 자리에서 다시 가려졌는지 검사함. (머리 빡세게 굴렸다...)
 			if (!catch_mv(i, true, '\0')) {
 				catch_mv(i, false, '\0');
