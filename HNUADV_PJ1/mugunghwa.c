@@ -234,7 +234,7 @@ void mugunghwa(void) {
 	system("cls");
 	display();
 
-	dialog("무궁화 꽃이 피었습니다");
+	dialog(" \"무궁화 꽃이 피었습니다\"");
 	int yh_period[] = { 250, 250, 0 }; // 무궁화 꽃 t, 피었습니다 t, 무궁화 전용 타이머(tick에 따르면 오차생김)
 
 	while (1) {

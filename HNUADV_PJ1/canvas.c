@@ -116,17 +116,17 @@ void dialog(char message[]) {
 		
 	}
 
-	system("cls");
+	gotoxy(Rmid + y, sec_x);
+	printf("                                                                       ");
 
 	// front 버퍼 비움, back은 save 버퍼로 복구
 	for (int i = 0; i < ROW_MAX; i++) {
 		for (int j = 0; j < COL_MAX; j++) {
-			front_buf[i][j] = ' ';
-			back_buf[i][j] = save_buf[i][j];
+				back_buf[i][j] = save_buf[i][j];
+
 		}
 	}
 
 	display();
-
 	//Sleep(2000); // 정지하는 상태인지 파악하기 위한 TEST CODE
 }
