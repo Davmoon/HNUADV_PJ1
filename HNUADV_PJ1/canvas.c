@@ -71,7 +71,13 @@ void draw(void) {
 }
 
 void print_status(void) {
-	printf("no. of players left: %d\n", n_alive);
+
+	//10일 경우 남는 칸 생김
+	if (n_alive != 10) { printf("no. of players left: 0%d\n", n_alive);}
+	else {
+		printf("no. of players left: %d\n", n_alive);
+	}
+
 	for (int p = 0; p < n_player; p++) {
 		printf("player %2d: %5s\n", p, player[p] ? "alive" : "DEAD");
 	}

@@ -278,12 +278,12 @@ void mugunghwa(void) {
 		// pass, kill 확인을 위한 테스트 코드
 		for (int i = 0; i < n_player; i++) {
 			if (pass[i] == true) {
-				gotoxy(N_ROW + 15, i*13);
-				printf("|%d패스(%d,%d)|", i, px[i], py[i]);
+				gotoxy(N_ROW + 15, i * 9);
+				printf("P%d(%d,%d)|", i, px[i], py[i]);
 			}
 			if (player[i] == false) {
-				gotoxy(N_ROW + 16, i * 13);
-				printf("|%d죽음(%d,%d)|", i, px[i], py[i]);
+				gotoxy(N_ROW + 16, i * 9);
+				printf("K%d(%d,%d)|", i, px[i], py[i]);
 			}
 		}
 		Sleep(10);
