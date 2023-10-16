@@ -22,17 +22,17 @@ int len = 0; //'무궁화꽃이 피었습니다' 출력된 길이 저장
 char msg1[50] = { "player",}; //dialog() 메세지 저장 sprintf https://jhnyang.tistory.com/314 참조
 
 void m_init(void) {
-	map_init(11, 35);
-	yh_print(4, 1, 3, true);
+	map_init(13, 35);
+	yh_print(5, 1, 3, true);
 	// 주기가 각자 다르고 tick % period[i]가 정확히 떨어지지 않을 수 있으므로 (Lee 조언 감사)
-	int period_set[] = { 250, 260, 270, 280, 290, 300, 310, 320, 330 };
+	int period_set[] = { 250, 260, 270, 280, 290, 300, 310, 320, 330, 340};
 
 	int x, y;
 	// 끝 자리에 살아남은 플레이어가 랜덤하게 배치되는 코드
 	for (int i = 0; i < n_player; i++) {
 		if (player[i] == true) {
 			do {
-				x = randint(1, 9);
+				x = randint(1, 12);
 				y = 33;
 			} while (!placable(x, y));
 			px[i] = x;
@@ -100,11 +100,11 @@ void pass_zone(void) {
 		//pass 처리와 false 처리가 운좋게 동시에 처리되는 상황 방지
 		if (player[i] == true) {
 
-			if ((px[i] == 3 && py[i] == 1) ||
-				(px[i] == 4 && py[i] == 2) ||
+			if ((px[i] == 4 && py[i] == 1) ||
 				(px[i] == 5 && py[i] == 2) ||
 				(px[i] == 6 && py[i] == 2) ||
-				(px[i] == 7 && py[i] == 1)) {
+				(px[i] == 7 && py[i] == 2) ||
+				(px[i] == 8 && py[i] == 1)) {
 
 				back_buf[px[i]][py[i]] = ' ';
 				pass[i] = true;
@@ -118,7 +118,7 @@ void yh_no_watch(int yh_period[]) {
 	int pm_time = 30; // 느려지거나 빨라지기 위해 더하는 밀리sec
 
 	if (len <= 9) {
-		yh_print(4, 1, 3, false); // 영희 off
+		yh_print(5, 1, 3, false); // 영희 off
 		gotoxy(N_ROW, len * 2); // 출력 장소로 이동
 
 		// '무궁화꽃이' 출력
@@ -141,7 +141,7 @@ void yh_no_watch(int yh_period[]) {
 		}
 	}
 	else if (len == 10) {
-		yh_print(4, 1, 3, true);
+		yh_print(5, 1, 3, true);
 		yh_period[2] += 10; // 무궁화 출력 이후 3초 카운트 해야 하기 때문
 
 		// 대기시간 카운터 테스트 코드
@@ -149,7 +149,7 @@ void yh_no_watch(int yh_period[]) {
 		printf("%d 밀리초 대기", yh_period[2]);
 
 		if (yh_period[2] % 3000 == 0) {
-			yh_print(4, 1, 3, true); //영희 on
+			yh_print(5, 1, 3, true); //영희 on
 			len = 0; //무궁화 한 페이즈 종료, 새로운 페이즈 시작 위해 초기화
 			yh_period[2] = 0; //무궁화 3초 대기 타이머 초기화
 
@@ -278,11 +278,11 @@ void mugunghwa(void) {
 		// pass, kill 확인을 위한 테스트 코드
 		for (int i = 0; i < n_player; i++) {
 			if (pass[i] == true) {
-				gotoxy(N_ROW + 14, i*13);
+				gotoxy(N_ROW + 15, i*13);
 				printf("|%d패스(%d,%d)|", i, px[i], py[i]);
 			}
 			if (player[i] == false) {
-				gotoxy(N_ROW + 15, i * 13);
+				gotoxy(N_ROW + 16, i * 13);
 				printf("|%d죽음(%d,%d)|", i, px[i], py[i]);
 			}
 		}
