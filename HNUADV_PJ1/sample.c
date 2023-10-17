@@ -90,8 +90,6 @@ void sample(void) {
 	system("cls");
 	display();
 
-	dialog("sample");
-
 	while (1) {
 		// player 0만 손으로 움직임(4방향)
 		key_t key = get_key();

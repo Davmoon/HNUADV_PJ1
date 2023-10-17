@@ -123,7 +123,7 @@ void dialog(char message[]) {
 	}
 
 	gotoxy(Rmid + y, sec_x);
-	printf("                                                                       ");
+	printf("                                         ");
 
 	// front 버퍼 비움, back은 save 버퍼로 복구
 	for (int i = 0; i < ROW_MAX; i++) {
