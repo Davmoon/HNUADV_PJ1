@@ -92,9 +92,9 @@ void ending() {
 
 
 int main(void) {
-    intro();
+    //intro();
 	jjuggumi_init();//인원 입력 함수
-    sample();
+    //sample();
 	mugunghwa();
 	//nightgame();
 	//juldarigi();

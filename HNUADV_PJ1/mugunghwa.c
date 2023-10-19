@@ -219,10 +219,12 @@ bool catch_mv(int pnum, bool count, key_t key) {
 			//테스트 좌표 출력
 			gotoxy(N_ROW + 2, 0);
 			printf("%d kill 좌표는: %d %d | %d %d", pnum, px[i], py[i], px[pnum], py[pnum]);
-
-			sprintf(msg1, "%s %d", msg1, pnum); //kill 플레이어 저장
-			back_buf[px[pnum]][py[pnum]] = ' ';
+			
 			player[pnum] = false;
+			back_buf[px[pnum]][py[pnum]] = ' ';
+			sprintf(msg1, "%s %d", msg1, pnum); //kill 플레이어 저장
+			display();
+			
 			n_alive--;
 			return false; //오류 방지 위해 설정
 		}
