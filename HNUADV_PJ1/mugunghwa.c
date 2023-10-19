@@ -236,7 +236,7 @@ void mugunghwa(void) {
 	system("cls");
 	display();
 
-	//dialog(" \"무궁화 꽃이 피었습니다\"");
+	dialog(" \"무궁화 꽃이 피었습니다\"");
 	int yh_period[] = { 250, 250, 0 }; // 무궁화 꽃 t, 피었습니다 t, 무궁화 전용 타이머(tick에 따르면 오차생김)
 
 	while (1) {
@@ -287,8 +287,8 @@ void mugunghwa(void) {
 				gotoxy(N_ROW + 16, i * 9);
 				printf("K%d(%d,%d)|", i, px[i], py[i]);
 			}
-			gotoxy(N_ROW + 17, i * 9);
-			printf("%d(%d,%d)|", i, px[i], py[i]);
+			//gotoxy(N_ROW + 17, i * 9);
+			//printf("%d(%d,%d)|", i, px[i], py[i]);
 		}
 		Sleep(10);
 		tick += 10; // 시스템 시간 (period[i]에서만 사용)

@@ -50,9 +50,8 @@ void intro() {
     printf(" _/ | _/ |         __/ |  __/ |                     \n");
     Sleep(200);
     printf("|__/ |__/         |___/  |___/                      \n");
-    Sleep(200);
+    Sleep(300);
 
-    Sleep(1000);
     system("cls");
 }
 
@@ -92,7 +91,7 @@ void ending() {
 
 
 int main(void) {
-    //intro();
+    intro();
 	jjuggumi_init();//인원 입력 함수
     //sample();
 	mugunghwa();
