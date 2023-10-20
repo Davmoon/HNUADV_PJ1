@@ -213,7 +213,7 @@ bool catch_mv(int pnum, bool count, key_t key) {
 				return false;
 			}
 			// 제자리에 있는 경우 잡지 않기. true인 경우 한번은 돌리고 제자리인 경우 catch_mv 다시 안돌리도록
-			if (pnum != 0 && count == true && mv_m_random(i) == true) {
+			if (pnum != 0 && count == true && mv_m_random(pnum) == true) {
 				return true;
 			}
 			//테스트 좌표 출력
