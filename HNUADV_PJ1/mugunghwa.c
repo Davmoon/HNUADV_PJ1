@@ -267,7 +267,7 @@ void mugunghwa(void) {
 		}
 
 		for (int i = 1; i < n_player; i++) {
-			if (tick % period[i] == 0 && player[i] == true && pass[i] == false) {
+			if (yh_period[2] % period[i] == 0 && player[i] == true && pass[i] == false) {
 				// 10인 경우, yh_no_watch 안의 ten_mv에서 작동(10% 중복 작동 방지 위해)
 				if (len <= 9) {
 					mv_m_random(i);
@@ -291,7 +291,7 @@ void mugunghwa(void) {
 			//printf("%d(%d,%d)|", i, px[i], py[i]);
 		}
 		Sleep(10);
-		tick += 10; // 시스템 시간 (period[i]에서만 사용)
+		tick += 10; // period[i] 플레이어 사용x
 		yh_period[2] += 10; // 무궁화 전용 타이머
 	}
 }
