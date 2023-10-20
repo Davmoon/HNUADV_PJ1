@@ -145,8 +145,8 @@ void yh_no_watch(int yh_period[]) {
 		yh_period[2] += 10; // 무궁화 출력 이후 3초 카운트 해야 하기 때문
 
 		// 대기시간 카운터 테스트 코드
-		//gotoxy(N_ROW + 1, 0);
-		//printf("%d 밀리초 대기", yh_period[2]);
+		gotoxy(N_ROW + 1, 0);
+		printf("%d 밀리초 대기", yh_period[2]);
 
 		if (yh_period[2] % 3000 == 0) {
 			yh_print(5, 1, 3, true); //영희 on
@@ -278,18 +278,18 @@ void mugunghwa(void) {
 		pass_zone();
 		display();
 		//pass, kill 확인을 위한 테스트 코드
-		//for (int i = 0; i < n_player; i++) {
-		//	if (pass[i] == true) {
-		//		gotoxy(N_ROW + 15, i * 9);
-		//		printf("P%d(%d,%d)|", i, px[i], py[i]);
-		//	}
-		//	if (player[i] == false) {
-		//		gotoxy(N_ROW + 16, i * 9);
-		//		printf("K%d(%d,%d)|", i, px[i], py[i]);
-		//	}
-		//	//gotoxy(N_ROW + 17, i * 9);
-		//	//printf("%d(%d,%d)|", i, px[i], py[i]);
-		//}
+		for (int i = 0; i < n_player; i++) {
+			if (pass[i] == true) {
+				gotoxy(N_ROW + 15, i * 9);
+				printf("P%d(%d,%d)|", i, px[i], py[i]);
+			}
+			if (player[i] == false) {
+				gotoxy(N_ROW + 16, i * 9);
+				printf("K%d(%d,%d)|", i, px[i], py[i]);
+			}
+			//gotoxy(N_ROW + 17, i * 9);
+			//printf("%d(%d,%d)|", i, px[i], py[i]);
+		}
 		Sleep(10);
 		tick += 10; // period[i] 플레이어 사용x
 		yh_period[2] += 10; // 무궁화 전용 타이머
