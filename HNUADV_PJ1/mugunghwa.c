@@ -259,7 +259,7 @@ void mugunghwa(void) {
 				}
 				else if (len == 10) {
 					if (catch_mv(0, true, key) == true) {
-						catch_mv(0, false, '\0');
+						catch_mv(0, false, '\0'); //\0은 비워둘 수 없어서 전달한것임..
 					}
 					
 				}
